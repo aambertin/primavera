@@ -1,5 +1,5 @@
 
-[![N|Solid](http://synergicsource.com/wp-content/uploads/2016/05/logo-small-dark.png =x150){:height="150" }](http://synergicsource.com)
+[![N|Solid](http://synergicsource.com/wp-content/uploads/2016/05/logo-small-dark.png){:height="150" }](http://synergicsource.com)
 
 # Primavera
 An ES6 class-based and decorators-powered fast development framework for node.js and express.
