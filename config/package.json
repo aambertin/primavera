@@ -1,10 +1,13 @@
 {
   "name": "primavera",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "author": "Anibal Ambertin <anibal@synergicsource.com> (http://www.synergicsource.com)",
   "license": "MIT",
+  "repository": {
+    "url": "https://github.com/aambertin/primavera"
+  },
   "dependencies": {
     "debug": "^3.0.1",
     "find": "^0.2.7",
