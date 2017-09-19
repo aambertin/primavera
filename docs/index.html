@@ -86,7 +86,132 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content">Please create README.md</div>
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="primavera">Primavera</h1>
+<p>An ES6 class-based and decorators-powered fast development framework for node.js and express.</p>
+<h2 id="decorated-annotated">Decorated / Annotated</h2>
+<p>Primavera provides a set of decorators (powered by babel decorators) that allow you to quickly get a complex project
+up and running by leveraging ES6 classes and a decorator-based configuration and interceptors approach.</p>
+<h2 id="an-example-endpoint-class">An example endpoint class</h2>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">import {Route, Controller} from &apos;primavera/web&apos;
+import {ValidateSchema} from &apos;primavera/validations&apos;
+
+@Controller({prefix: &apos;links&apos;})
+class LinksServicesEndpoints {
+    @Route.GET()
+    listLinks () { ... }
+
+    @Session(&apos;someSessionAttribute&apos;)
+    get sessionAttribute() {}
+
+    @ValidateSchema({}, CreateLinkSchema)
+    @Route.POST()
+    createLink(params, body) { 
+        this.sessionAttribute // contains session attribute
+    }
+}</code>
+</code></pre>
+<h2 id="an-example-middleware-class">An example middleware class</h2>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">import {Route, Controller} from &apos;primavera/web&apos;
+import {ValidateSchema} from &apos;primavera/validations&apos;
+import {RequestAuth} from &apos;primavera/web-security&apos;
+
+@Middleware({prefix: &apos;links&apos;})
+class LinksServicesSecurityMiddleware {
+    @RequestAuth
+    @Route.USE(&apos;*&apos;)
+    checkAuth () { ... }
+}</code>
+</code></pre>
+<h2 id="ci-container">CI container</h2>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">import {Inject, Injectable} from &apos;primavera/core&apos;
+
+@Injectable(&apos;services/injectable&apos;)
+class InjectableService {
+    someMethod() { ... }
+}
+
+class DependantService {
+    @Inject(&apos;services/injectable&apos;)
+    get injectable() {}
+
+    doSomething() {
+        injectable.someMethod() // uses injected dependency
+    }
+}</code>
+</code></pre>
+<h2 id="plain-interception-before-after">Plain interception: @Before &amp; @After</h2>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">import {Before, After} from &apos;primavera/core&apos;
+
+class InterceptorsTest {
+    @Before((...args) =&gt; debug(...args))
+    withBefore() {
+        /// this is logging before the method hits
+    }
+
+    @Before((...args) =&gt; { return [&apos;altered&apos;] }
+    alteredArguments (value) {
+        /// value will always be &quot;altered&quot;
+    }
+
+    @After((returnValue) =&gt; debug(&apos;returnvalue was&apos;, returnValue))
+    loggingAfter() {
+        return &quot;unaltered&quot; // logging is okay, but doesn&apos;t alter the return value
+    }
+
+    @After((returnValue) =&gt; { return returnValue+1 }))
+    alteredValue() {
+        return 1 // actual return value will be altered by @After, so it will be 2
+    }</code>
+</code></pre>
+<h2 id="transform-input-and-output">Transform input and output</h2>
+<p>It works pretty much like @Before and @After...</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">import {Transform, After} from &apos;primavera/transform&apos;
+
+class TransformExample {
+
+    @Transform.OUT((raw) =&gt; { raw.altered = true; return raw; })
+    alteredValue() { return { altered: false } }
+
+    checkValue() {
+        this.alteredValue().altered // true
+    }
+}</code>
+</code></pre>
+<h2 id="validations">Validations</h2>
+<p>It works pretty much like @Before and @After...</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">import {ValidateSchema} from &apos;primavera/validations&apos;
+
+class ValidationsExample {
+
+    @ValidateSChema(JSONSCHEMA)
+    validatedValue(value) { 
+        debug(&apos;:value valid according to provided JSONSCHEMA&apos;)
+    }
+}</code>
+</code></pre>
+<h2 id="decoupling-through-message-pattern-matching">Decoupling through message pattern matching</h2>
+<p>Only in-memory and first-level attribute matching ATM.
+Seneca and AWS Lambda support comming soon.</p>
+<pre><code class="lang-javascript"><code class="source-code prettyprint">class LinkServices {
+    @Resolve({ domain: &apos;links&apos;, action: &apos;create&apos; })
+    function resolverService(...args) {
+        ...
+    }
+}
+
+class LinksCLient {
+    @ResolveWith({domain:&apos;links&apos;, action: &apos;create&apos;})
+    function transparentServiceResolving(serviceParams) { 
+        // you can alter those params here to match the service
+        // your return value will be the service&apos;s input
+        // the service output will be served to the caller
+        // you can transform the output using @Transform.OUT 
+    }
+}</code>
+</code></pre>
+<p>Better documentation an example projects coming soon :)</p>
+</div>
+</div>
 
 <footer class="footer">
   Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
