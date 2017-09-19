@@ -1,0 +1,3250 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "name": "src/container.js",
+    "content": "const debug = require('debug')('@expression/core:container')\n\nvar container = {};\nvar byname = {};\n\nexport default class Container {\n\t\n\tstatic set(alias, target) {\n\t\ttarget.$$alias = alias\n\t\tcontainer[target.$$alias] = target\n\t\tbyname[target.name] = target\n\t\tdebug(`Set ${target.name}(${alias||''}) in container.`)\n\t}\n\n\tstatic get(alias) {\n\t\tlet found = container[alias] || byname[alias]\n\t\tif (!found) {\n\t\t\tfound = new Proxy({$$ExpressionProxy:'$$'}, {\n\t\t\t\tget: function (target, key, receiver) {\n\t\t\t\t\tconst instance = container[alias] || byname[alias]\n\t\t\t\t\tif (!instance && typeof key == 'string' && !target[key]) {\n\t\t\t\t\t\tthrow new Error(`Tryied to access property \"${key}\" in component ${alias}, but the component was not declared.`)\n\t\t\t\t\t}\n\t\t\t\t\treturn (instance) ? instance[key] : target[key]\n\t\t\t\t},\n\t\t\t\tset: function (target, key, value) {\n\t\t\t\t\tconst instance = container[alias] || byname[alias]\n\t\t\t\t\tif (!instance) throw new Error(`Tryied to set ${key} in component ${alias}, but the component was not declared.`)\n\t\t\t\t\tinstance[key] = value\n\t\t\t\t}\n\t\t\t})\n\t\t}\n\t\treturn found\n\t}\n\n}",
+    "static": true,
+    "longname": "src/container.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 1,
+    "kind": "variable",
+    "name": "debug",
+    "memberof": "src/container.js",
+    "static": true,
+    "longname": "src/container.js~debug",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/container.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 2,
+    "kind": "variable",
+    "name": "container",
+    "memberof": "src/container.js",
+    "static": true,
+    "longname": "src/container.js~container",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/container.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "{}"
+      ]
+    }
+  },
+  {
+    "__docId__": 3,
+    "kind": "variable",
+    "name": "byname",
+    "memberof": "src/container.js",
+    "static": true,
+    "longname": "src/container.js~byname",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/container.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "{}"
+      ]
+    }
+  },
+  {
+    "__docId__": 4,
+    "kind": "class",
+    "name": "Container",
+    "memberof": "src/container.js",
+    "static": true,
+    "longname": "src/container.js~Container",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/container.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "interface": false
+  },
+  {
+    "__docId__": 5,
+    "kind": "method",
+    "name": "set",
+    "memberof": "src/container.js~Container",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/container.js~Container.set",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "alias",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "target",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 6,
+    "kind": "method",
+    "name": "get",
+    "memberof": "src/container.js~Container",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/container.js~Container.get",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "alias",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 7,
+    "kind": "file",
+    "name": "src/core.js",
+    "content": "'use strict'\nconst debug = require('debug')('primavera:core')\nimport _ from 'lodash'\nimport {default as jsonschema} from 'jsonschema'\nimport stringify from 'json-stable-stringify'\nimport Container from './container'\n\n\n/**\n * Register a component within the in-memory container for use with @Inject.\n * It can only be used on a class-level.\n * \n * @param {string} alias alias given to the component to identify within the in-memory container.\n * @public\n * \n * @example\n * @Injectable('services/injectable')\n * class InjectableComponent { ... }\n * class DepentantComponent {\n *     @Inject('services/injectable')\n *     get injectable() {}\n * }\n */\nexport function Injectable(alias) {\n\n    return function(target, name, descriptor) {\n        if (!target) throw new Error(`@Injectable can only be set on a class.`)\n        debug(`@Injectable ${target.name} stored in container as ${alias}`)\n\n        Container.set(alias || target, target)\n\n        return target\n    }\n}\n\n\n/**\n * @see #static-function-Injectable\n * @public\n * @type {decorator}\n */\nexport const Service    = Injectable\n\n/**\n * @see #static-function-Injectable\n * @public\n * @type {decorator}\n */\nexport const Component  = Injectable\n\n/**\n * @see #static-function-Injectable\n * @public\n * @type {decorator}\n */\nexport const Module     = Injectable\n\n/**\n * @see #static-function-Injectable\n * @public\n * @type {decorator}\n */\nexport const Adapter    = Injectable\n\n\n/**\n * Apply one or more decorators BEFORE a method is executed.\n * Decorators can transform the original arguments accessing the _arguments_ of the function,\n * or by providing an array as return value which will override the entire _arguments chain_\n * to be passed to the next intercepting function or the target method.\n *\n * @type {decorator}\n * @param {...function} fns functions to be executed before the target method\n * @public\n * \n * @example\n * @Before(() => debug('do nothing'))\n * function somefunction() { ... }\n *\n * @example\n * @Before((...args) => { return ['altered']})\n * testfunction(...args) {\n *     // args[0] == 'altered'\n * }\n *\n * @example\n * @Before((...args) => { \n *     const altered = [...args]\n *     altered[0] = 'altered'\n * })\n * testfunction(...args) {\n *     // args[0] == 'altered'\n * }\n */\nexport function Before(...fns) {\n    return function(target, name, descriptor) {\n        const previous = descriptor.value\n        descriptor.value = async function(...args) {\n            let responseChain\n            for (let fn of fns) {\n                if (typeof fn == 'string' && fn.startsWith('$this')) {\n                    debug(`@Before is fetching instance function from ${fn} with this`, this)\n                    fn = _.get(this, fn.substring(fn.indexOf('.')))\n                }\n                debug(`@Before ${target.constructor.name}.${name}, executing ${fn.name}`)\n                responseChain = await fn.apply(this, args)\n                if (responseChain && !Array.isArray(responseChain)) responseChain = [responseChain]\n            }\n            return await (previous).apply(this, responseChain || args)\n        }\n\n        return descriptor\n    }\n}\n\n/**\n * Alias for @Before used for syntactic sugar.\n * @type {decorator}\n */\nexport const Validate = Before\n\n/**\n * Apply one or more functions AFTER a method is executed.\n * Decorators can transform or choose to return a different return value by just returning something\n * or by altering the attributes of a returned object.\n *\n * Each function will receive as only parameter the return value of the previous one.\n * If no value is returned, the previous non-undefined return value will be kept.\n *\n * @type {decorator}\n * @param {...function} fns functions to be executed before the target method\n * @public\n * \n * @example\n * @After(() => debug('do nothing'))\n * function testfunction() { return 'original' }\n * testfunction() == 'original'\n *\n * @example\n * @After((value) => { return 'altered'})\n * testfunction() { return 'original' }\n * testfunction() == 'altered'\n *\n * @example\n * @After((obj) => { \n *     obj.altered = true\n * })\n * testfunction() { return {altered:false} }\n * testfunction().altered == true\n */\nexport function After(...fns) {\n    return function(target, name, descriptor) {\n        const previous = descriptor.value;\n        descriptor.value = async function(...args) {\n            let response, current\n            response = current = await previous.apply(this, args)\n\n            for (let fn of fns) {\n                debug(`@After ${target.constructor.name}.${name}, executing ${fn.name || 'anonymous function'}`)\n                current = await fn.apply(this, [response])\n                if (current != undefined) {//:\n                    debug(`@After ${target.constructor.name}.${name}, ${fn.name || 'anonymous function'} returned `, current)\n                    response = current\n                }\n            }\n            return response\n        }\n\n        return descriptor\n    }\n}\n/**\n * Alias for Before used for syntactic sugar.\n * \n * @see Before\n * @public\n * @type {decorator}\n */\nexport const Project = After\n\n\n\n\n/**\n * Smart pooling describes the ability to keep a pool of \"Singletons\"\n * based on their instantiation parameters.\n * \n * This helps optimize creation/destruction of objects in the container,\n * reducing memory footpring as well as saving resources by reducing\n * object creation operations.\n *\n * To be used toogether with @Injectable or one of its aliases.\n *\n * @public\n * \n * @example\n * @SmartPooling()\n * class PooledClass {\n *     constructor() {\n *         this.random = Math.random()\n *     }\n * }\n *\n * ...\n * let base = new PooledClass({ value: 1 })\n * let same = new PooledClass({ value: 1 })\n * let different = new PooledClass({ value: 2 })\n *\n * base.random == same.random\n * base.random == different.random \n */\nexport function SmartPooling() {\n    const instances = {}\n    return function (target, name, descriptor) {\n        if (!target || descriptor) throw new Error(\"@SmartPooling can only be set on a class.\")\n\n        const SmartPoolingProxy = function(...args) {\n            const hash = args.length > 0 ? stringify(args) : 0\n            const UUID = `${target}_${hash}`\n            if (!instances[UUID])  //:\n                instances[UUID] = new target(...args)\n\n            debug(`@SmartPooling instance of ${target.name} ${hash}`, instances[UUID])\n\n            return instances[UUID]\n\n        }\n\n        Object.setPrototypeOf(SmartPoolingProxy, target) \n        \n        return SmartPoolingProxy\n\n    }\n}\n/**\n * Alias of @SmartPooling\n * \n * @public\n * @type {decorator}\n */\nexport const Singleton = SmartPooling\n\n/**\n * Inject a contained instance into a given component.\n * If the dependency can't be found, it will create a SmartProxy\n * to delay instantiation until the dependency is first accessed (lazy initialization).\n *\n * @public\n * @param {string} alias is the alias of the component within the in-memory container\n * @param {[]} args arguments to initialize the instance of the component (if required or desired)\n */\nexport function Inject(config, args) {\n    if (args && !Array.isArray(args)) args = [args]\n    const alias = (config && config.path) || config || false\n    return function(target, name, descriptor) {\n        if (!target || !name || !descriptor) throw new Error(\"@Inject can only be used on an attribute level.\")\n\n        const _fn = descriptor.get\n        function wrapper() {\n            const _clazz = Container.get(alias || name)\n            debug(`@Inject dependency in ${target.constructor.name}.${name} (${_clazz.name})`)\n            return new _clazz(...(args || []))\n        }\n        descriptor.get = wrapper\n        return descriptor\n    }\n}\n\n\n/**\n * Bind a given object element to the decorated method.\n *\n * @public\n * @param {...string} fixtures the fixtures to be applied. It can reference attributes or methods on the instance level.\n *\n * @example\n * @Bind('myAttribute')\n * testfunction (value) {\n *     value == this.myAttribute\n * }\n *\n * @example\n * @Bind('nested.attribute')\n * testfunction (value) {\n *     value == this.nested.attribute\n * }\n *\n * @example\n * @Bind('someFunction')\n * testfunction (value) {\n *     value == this.someFunction()\n * }\n *\n * @example\n * @Bind('someFunction().nestedAttribute')\n * testfunction (value) {\n *     value == this.someFunction().nestedAttribute\n * }\n *\n * \n */\nexport function Bind(...fixtures) {\n    return function (target, name, descriptor) {\n        debug(`@Bind ${fixtures} on ${target.constructor.name}::${name}`)\n        \n        const _fn = descriptor.value\n\n        descriptor.value = async function(...args) {\n            const bundle = []\n            for (let fixture of fixtures) {\n                let bound = (fixture instanceof Function) ? fixture : false\n                \n                if (!bound) {\n                    const self = this\n                    if (/\\(\\)/.test(fixture))\n                        bound = _.result(self, fixture.replace('()',''))\n                    else {\n                        bound = _.get(self, fixture)\n                    }\n                }\n\n                if (bound instanceof Function) {\n                    const self = this\n                    const _bound = bound\n                    // Force \"this\" binding in fixture (.bind doesn't really bind for some reason)\n                    bound = async function(...args) {\n                        return await _bound.apply(self, args)\n                    }\n                }\n\n                bundle.push(bound)\n            }\n\n            const params = [...bundle, ...args]\n            debug(`@Bind is invoking the source function ${_fn.name} with params`, params)\n            return await _fn.apply(this, params)\n        }\n\n        return descriptor\n    }\n}\n\n\n/**\n * Indicates the potential sources of properties/values in priority order.\n * To be used together with @Property\n *\n * @PropertySources can take any object (and will inspect it) or _resolver function_.\n * It will iterate through such sources until the requested @Property is resolved.\n * \n * @public\n * @param {...} sources the sources in prioritized order\n */\nexport function PropertySources (...sources) {\n    return function (target, name, descriptor) {\n        debug(\"@PropertySources - target is descriptor? \", !!descriptor)\n        target = descriptor || target\n\n        if (!target.$$propertySources) //:\n            target.$$propertySources = []\n        \n        for (let source of sources) { // push all sources into property sources list.\n            target.$$propertySources.push(source)\n        }\n\n        return descriptor || target\n    }\n}\n\n\n/**\n * Fetch a value from one of the @PropertySources declared on the class or method level.\n *\n * @public\n * @param {string} path Path of the property within the source objects (or used)\n * @param {object|string|function} default value if property is not found within the sources\n * \n */\nexport function Property(path, dflt) {\n    return function (target, name, descriptor) {\n\n        /*\n         * Internal implementation to get property from different source types.\n         */\n        function fetchPropertyBySourceType(path, source) {\n            let value\n            debug(`Trying to get property ${path} from ${typeof source} source: `, source)\n            if (typeof source === \"object\") {//:\n                value = _.get(source, path)\n            }\n            else if (typeof source === \"function\") //:\n                value = source(path)\n\n            return value\n        }\n\n\n        const isFunction = !!descriptor.value\n        const overwrite = isFunction ? 'value' : 'get'\n        const _fn = descriptor[overwrite]\n        descriptor[overwrite] = function() {\n            let value, source, container\n\n            // checked all preferred sources already, check additional\n            // method/property configured s ources or otherwise class-level\n            let instance = target && target.constructor || target\n            debug(`@Property sources for ${path}: `, descriptor, instance)\n            for (container of [descriptor,instance]) {\n                if (container && container.$$propertySources) {\n                    for (source of container.$$propertySources) {\n                        if (source === false) return dflt\n\n                        value = fetchPropertyBySourceType(path, source)\n                        if (value !== undefined) return value\n                    }\n                }\n            }\n\n            debug(`@Property couldn't find ${path} in sources, using default value: `, dflt)\n\n            return dflt\n        }\n\n        return descriptor\n    }\n}\n\n\n/**\n * @Self allows to declare the context in which a function should be executed.\n * It basically invokes fn.apply() with an instance of the indicated class.\n *\n * @public\n * @param {class} clazz the class to be used\n */\nexport function Self(clazz) {\n    return function(target, name, descriptor) {\n        if (!descriptor) throw new Error(`@Self can only be used in class method definitions.`)\n\n        if (typeof clazz == 'string') {\n            let clazzname = clazz\n            clazz = function () {\n                const clazzfn = eval(clazz)\n                return new clazzfn\n            }\n            clazz.$$name = clazzname\n        }\n\n        const fn = descriptor.value || descriptor.get\n\n        descriptor.value = function(...args) {\n            let self = this\n            if (!this || !(this instanceof clazz)) {\n                try {\n                    debug(`@Self is trying to initialize ${clazz.$$name || clazz.constructor.name} to execute ${fn.name}`)\n                    self = clazz\n                }\n                catch (err) {\n                    throw new Error(`Error trying to initialize ${clazz.constructor.name}`, err)\n                }\n            }\n\n            return fn.apply(self, args)\n        }\n\n        return descriptor\n    }\n}",
+    "static": true,
+    "longname": "src/core.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 8,
+    "kind": "variable",
+    "name": "debug",
+    "memberof": "src/core.js",
+    "static": true,
+    "longname": "src/core.js~debug",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/core.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 9,
+    "kind": "function",
+    "name": "Injectable",
+    "memberof": "src/core.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/core.js~Injectable",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Injectable}",
+    "description": "Register a component within the in-memory container for use with @Inject.\nIt can only be used on a class-level.",
+    "examples": [
+      "@Injectable('services/injectable')\nclass InjectableComponent { ... }\nclass DepentantComponent {\n    @Inject('services/injectable')\n    get injectable() {}\n}"
+    ],
+    "lineNumber": 24,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "alias",
+        "description": "alias given to the component to identify within the in-memory container."
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 10,
+    "kind": "variable",
+    "name": "Service",
+    "memberof": "src/core.js",
+    "static": true,
+    "longname": "src/core.js~Service",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Service}",
+    "description": "",
+    "see": [
+      "#static-function-Injectable"
+    ],
+    "lineNumber": 41,
+    "type": {
+      "nullable": null,
+      "types": [
+        "decorator"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 11,
+    "kind": "variable",
+    "name": "Component",
+    "memberof": "src/core.js",
+    "static": true,
+    "longname": "src/core.js~Component",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Component}",
+    "description": "",
+    "see": [
+      "#static-function-Injectable"
+    ],
+    "lineNumber": 48,
+    "type": {
+      "nullable": null,
+      "types": [
+        "decorator"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 12,
+    "kind": "variable",
+    "name": "Module",
+    "memberof": "src/core.js",
+    "static": true,
+    "longname": "src/core.js~Module",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Module}",
+    "description": "",
+    "see": [
+      "#static-function-Injectable"
+    ],
+    "lineNumber": 55,
+    "type": {
+      "nullable": null,
+      "types": [
+        "decorator"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 13,
+    "kind": "variable",
+    "name": "Adapter",
+    "memberof": "src/core.js",
+    "static": true,
+    "longname": "src/core.js~Adapter",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Adapter}",
+    "description": "",
+    "see": [
+      "#static-function-Injectable"
+    ],
+    "lineNumber": 62,
+    "type": {
+      "nullable": null,
+      "types": [
+        "decorator"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 14,
+    "kind": "function",
+    "name": "Before",
+    "memberof": "src/core.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/core.js~Before",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Before}",
+    "description": "Apply one or more decorators BEFORE a method is executed.\nDecorators can transform the original arguments accessing the _arguments_ of the function,\nor by providing an array as return value which will override the entire _arguments chain_\nto be passed to the next intercepting function or the target method.",
+    "examples": [
+      "@Before(() => debug('do nothing'))\nfunction somefunction() { ... }",
+      "@Before((...args) => { return ['altered']})\ntestfunction(...args) {\n    // args[0] == 'altered'\n}",
+      "@Before((...args) => { \n    const altered = [...args]\n    altered[0] = 'altered'\n})\ntestfunction(...args) {\n    // args[0] == 'altered'\n}"
+    ],
+    "lineNumber": 93,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "...function"
+        ],
+        "spread": true,
+        "optional": false,
+        "name": "fns",
+        "description": "functions to be executed before the target method"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "type": {
+      "nullable": null,
+      "types": [
+        "decorator"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 15,
+    "kind": "variable",
+    "name": "Validate",
+    "memberof": "src/core.js",
+    "static": true,
+    "longname": "src/core.js~Validate",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Validate}",
+    "description": "Alias for @Before used for syntactic sugar.",
+    "lineNumber": 118,
+    "type": {
+      "nullable": null,
+      "types": [
+        "decorator"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 16,
+    "kind": "function",
+    "name": "After",
+    "memberof": "src/core.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/core.js~After",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{After}",
+    "description": "Apply one or more functions AFTER a method is executed.\nDecorators can transform or choose to return a different return value by just returning something\nor by altering the attributes of a returned object.\n\nEach function will receive as only parameter the return value of the previous one.\nIf no value is returned, the previous non-undefined return value will be kept.",
+    "examples": [
+      "@After(() => debug('do nothing'))\nfunction testfunction() { return 'original' }\ntestfunction() == 'original'",
+      "@After((value) => { return 'altered'})\ntestfunction() { return 'original' }\ntestfunction() == 'altered'",
+      "@After((obj) => { \n    obj.altered = true\n})\ntestfunction() { return {altered:false} }\ntestfunction().altered == true"
+    ],
+    "lineNumber": 149,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "...function"
+        ],
+        "spread": true,
+        "optional": false,
+        "name": "fns",
+        "description": "functions to be executed before the target method"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "type": {
+      "nullable": null,
+      "types": [
+        "decorator"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 17,
+    "kind": "variable",
+    "name": "Project",
+    "memberof": "src/core.js",
+    "static": true,
+    "longname": "src/core.js~Project",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Project}",
+    "description": "Alias for Before used for syntactic sugar.",
+    "see": [
+      "Before"
+    ],
+    "lineNumber": 178,
+    "type": {
+      "nullable": null,
+      "types": [
+        "decorator"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 18,
+    "kind": "function",
+    "name": "SmartPooling",
+    "memberof": "src/core.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/core.js~SmartPooling",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{SmartPooling}",
+    "description": "Smart pooling describes the ability to keep a pool of \"Singletons\"\nbased on their instantiation parameters.\n\nThis helps optimize creation/destruction of objects in the container,\nreducing memory footpring as well as saving resources by reducing\nobject creation operations.\n\nTo be used toogether with @Injectable or one of its aliases.",
+    "examples": [
+      "@SmartPooling()\nclass PooledClass {\n    constructor() {\n        this.random = Math.random()\n    }\n}\n\n...\nlet base = new PooledClass({ value: 1 })\nlet same = new PooledClass({ value: 1 })\nlet different = new PooledClass({ value: 2 })\n\nbase.random == same.random\nbase.random == different.random "
+    ],
+    "lineNumber": 208,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 19,
+    "kind": "variable",
+    "name": "Singleton",
+    "memberof": "src/core.js",
+    "static": true,
+    "longname": "src/core.js~Singleton",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Singleton}",
+    "description": "Alias of @SmartPooling",
+    "lineNumber": 235,
+    "type": {
+      "nullable": null,
+      "types": [
+        "decorator"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 20,
+    "kind": "function",
+    "name": "Inject",
+    "memberof": "src/core.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/core.js~Inject",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Inject}",
+    "description": "Inject a contained instance into a given component.\nIf the dependency can't be found, it will create a SmartProxy\nto delay instantiation until the dependency is first accessed (lazy initialization).",
+    "lineNumber": 246,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "alias",
+        "description": "is the alias of the component within the in-memory container"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": "arguments to initialize the instance of the component (if required or desired)"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 21,
+    "kind": "function",
+    "name": "Bind",
+    "memberof": "src/core.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/core.js~Bind",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Bind}",
+    "description": "Bind a given object element to the decorated method.",
+    "examples": [
+      "@Bind('myAttribute')\ntestfunction (value) {\n    value == this.myAttribute\n}",
+      "@Bind('nested.attribute')\ntestfunction (value) {\n    value == this.nested.attribute\n}",
+      "@Bind('someFunction')\ntestfunction (value) {\n    value == this.someFunction()\n}",
+      "@Bind('someFunction().nestedAttribute')\ntestfunction (value) {\n    value == this.someFunction().nestedAttribute\n}"
+    ],
+    "lineNumber": 295,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "...string"
+        ],
+        "spread": true,
+        "optional": false,
+        "name": "fixtures",
+        "description": "the fixtures to be applied. It can reference attributes or methods on the instance level."
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 22,
+    "kind": "function",
+    "name": "PropertySources",
+    "memberof": "src/core.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/core.js~PropertySources",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{PropertySources}",
+    "description": "Indicates the potential sources of properties/values in priority order.\nTo be used together with @Property",
+    "lineNumber": 344,
+    "unknown": [
+      {
+        "tagName": "@PropertySources",
+        "tagValue": "can take any object (and will inspect it) or _resolver function_.\nIt will iterate through such sources until the requested @Property is resolved."
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "..."
+        ],
+        "spread": true,
+        "optional": false,
+        "name": "sources",
+        "description": "the sources in prioritized order"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 23,
+    "kind": "function",
+    "name": "Property",
+    "memberof": "src/core.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/core.js~Property",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Property}",
+    "description": "Fetch a value from one of the @PropertySources declared on the class or method level.",
+    "lineNumber": 369,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "path",
+        "description": "Path of the property within the source objects (or used)"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "object",
+          "string",
+          "function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "default",
+        "description": "value if property is not found within the sources"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 24,
+    "kind": "function",
+    "name": "Self",
+    "memberof": "src/core.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/core.js~Self",
+    "access": "public",
+    "export": true,
+    "importPath": "primavera/src/core.js",
+    "importStyle": "{Self}",
+    "description": "",
+    "lineNumber": 424,
+    "unknown": [
+      {
+        "tagName": "@Self",
+        "tagValue": "allows to declare the context in which a function should be executed.\nIt basically invokes fn.apply() with an instance of the indicated class."
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "class"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "clazz",
+        "description": "the class to be used"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 25,
+    "kind": "file",
+    "name": "src/flow.js",
+    "content": "'use strict'\nconst debug = require('debug')('@expression/core:decorators/flow')\nconst _ = require('lodash')\n\nconst resolvers = []\n\nexport function register(pattern, fn) {\n    debug(\"Registered resolver for \", pattern)\n    resolvers.push({pattern, fn})\n}\n\nexport async function resolve(data, context) {\n    let candidates = []\n\n    function match(value, matcher) {\n        if (typeof matcher == 'function') //:\n            return matcher(value)\n        else if (typeof matcher == 'object' && matcher.constructor.name == 'RegExp') //:\n            return matcher.test(value)\n        else //:\n            return value == matcher\n    }\n\n    // weight the suitable candidates\n    for (let resolver of resolvers) {\n        let weight = 0\n        for (let attribute in resolver.pattern) {\n            let value = _.get(context, attribute)\n            if ((!(attribute in context)) || !match(value, resolver.pattern[attribute])) {\n                // over-specialized or unmatching\n                weight = 0\n                break\n            }\n            weight++\n        }\n        if (weight > 0) {\n            candidates.push({fn: resolver.fn, weight})\n        }\n    }\n\n    // Not found\n    if (candidates.length < 1) {\n        debug(\"No @Resolve candidates match the message context \", context)\n        throw new Error(\"No @Resolve candidates match the message context \", context)\n    }\n\n    candidates = candidates.sort((a,b) => b.weight - a.weight)\n\n    // Weight collision\n    if (candidates[1]) {\n        if (candidates[0].weight == candidates[1].weight) {\n            debug(\"There is a weight collision between resolvers for message context \", context, candidates[0], candidates[1])\n            throw new Error(\"There is a weight collision between resolvers for message context.\")\n        }\n        debug(`Found competition between candidates[0](${candidates[0].weight}) and candidates[1](${candidates[1].weight})`)\n    }\n\n    return await candidates[0].fn(data, context)\n}\n\n\nexport function Resolve(pattern) {\n    return function (target, name, descriptor) {\n        const _target = descriptor.value || target\n        register(pattern, _target)\n        return _target\n    }\n}\n\n\nexport function ResolveWith(pattern) {\n\n    return function(target, name, descriptor) {\n        debug(`Registering function ${target.name}->${name} as resolve-requestor for pattern: `, pattern)\n        const previous = descriptor.value;\n        descriptor.value = async function() {\n            let response, processor\n            debug(`@ResolveWith is being applied to ${previous.name || 'inline function'}`)\n            response = await previous.apply(this, arguments)\n            processor = ResolveWith.resolver(pattern)\n            return await processor(response)\n        }\n\n        return descriptor\n    }\n}\n\nResolveWith.resolver = function(pattern) {\n    return async function(data) {\n        debug(\"Resolving data with resolver for pattern \", pattern, data)\n        if (typeof data == 'Promise') data = await data\n\n        const context = Object.assign({}, pattern)\n        for (let attribute in context) {\n            let value = context[attribute]\n            if (typeof value == 'string' && value.startsWith(\"$data\")) //:\n                context[attribute] = _.get(data, value.substring(6))\n        }\n        debug(\"Resolved message context to get resolver \", context, data)\n\n        return await resolve(data, context)\n    }\n}",
+    "static": true,
+    "longname": "src/flow.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 26,
+    "kind": "variable",
+    "name": "debug",
+    "memberof": "src/flow.js",
+    "static": true,
+    "longname": "src/flow.js~debug",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/flow.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 27,
+    "kind": "variable",
+    "name": "_",
+    "memberof": "src/flow.js",
+    "static": true,
+    "longname": "src/flow.js~_",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/flow.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 28,
+    "kind": "variable",
+    "name": "resolvers",
+    "memberof": "src/flow.js",
+    "static": true,
+    "longname": "src/flow.js~resolvers",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/flow.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*[]"
+      ]
+    }
+  },
+  {
+    "__docId__": 29,
+    "kind": "function",
+    "name": "register",
+    "memberof": "src/flow.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/flow.js~register",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/flow.js",
+    "importStyle": "{register}",
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "pattern",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "fn",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 30,
+    "kind": "function",
+    "name": "resolve",
+    "memberof": "src/flow.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/flow.js~resolve",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/flow.js",
+    "importStyle": "{resolve}",
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "context",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 31,
+    "kind": "function",
+    "name": "Resolve",
+    "memberof": "src/flow.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/flow.js~Resolve",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/flow.js",
+    "importStyle": "{Resolve}",
+    "description": null,
+    "lineNumber": 60,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "pattern",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 32,
+    "kind": "function",
+    "name": "ResolveWith",
+    "memberof": "src/flow.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/flow.js~ResolveWith",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/flow.js",
+    "importStyle": "{ResolveWith}",
+    "description": null,
+    "lineNumber": 68,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "pattern",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 33,
+    "kind": "function",
+    "name": "resolver",
+    "memberof": "src/flow.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/flow.js~resolver",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/flow.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 85,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "pattern",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 34,
+    "kind": "file",
+    "name": "src/index.js",
+    "content": "const loader = require('./loader')\nconst core = require('./core')\nconst validations = require('./validations')\nconst transform = require('./transform')\nconst flow = require('./flow')\nconst web = require('./web')\nconst webSecurity = require('./web-security')\n\nmodule.exports = {loader,core,validations,transform,flow,web, 'web-security': webSecurity }",
+    "static": true,
+    "longname": "src/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 35,
+    "kind": "variable",
+    "name": "loader",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~loader",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 36,
+    "kind": "variable",
+    "name": "core",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~core",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 2,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 37,
+    "kind": "variable",
+    "name": "validations",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~validations",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 38,
+    "kind": "variable",
+    "name": "transform",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~transform",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 39,
+    "kind": "variable",
+    "name": "flow",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~flow",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 40,
+    "kind": "variable",
+    "name": "web",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~web",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 41,
+    "kind": "variable",
+    "name": "webSecurity",
+    "memberof": "src/index.js",
+    "static": true,
+    "longname": "src/index.js~webSecurity",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/index.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 42,
+    "kind": "file",
+    "name": "src/loader.js",
+    "content": "const debug = require('debug')('@expression/core:loader')\n\nimport prequire from 'parent-require'\nimport process from 'process'\nimport find from 'find'\n\n\nexport default load\n\nexport function load(patterns, __basedir = process.cwd(), filterfn) {\n    if (!patterns) return\n\n    if (Array.isArray(patterns)) {\n        if (patterns.length < 1)  return\n\n        for (let pattern of patterns) //:\n            load(pattern, __basedir, filterfn)\n\n        return\n    }\n\n    const files = find.fileSync(patterns, __basedir)\n    for (let file of files) {\n        file = file.substring(0, file.lastIndexOf('.'))\n        if (!filterfn || filterfn(file)) //:\n            require.main.require(`${file}`)\n    }\n}",
+    "static": true,
+    "longname": "src/loader.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 43,
+    "kind": "variable",
+    "name": "debug",
+    "memberof": "src/loader.js",
+    "static": true,
+    "longname": "src/loader.js~debug",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/loader.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 44,
+    "kind": "function",
+    "name": "load",
+    "memberof": "src/loader.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/loader.js~load",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/loader.js",
+    "importStyle": "{load}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "patterns",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "__basedir",
+        "optional": true,
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "filterfn",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 45,
+    "kind": "file",
+    "name": "src/transform.js",
+    "content": "// const debug = require('debug')('@expression/core:decorators/models')\nimport { default as debuglib } from 'debug'\nimport _ from 'lodash'\nimport { default as jsonschema } from 'jsonschema'\n\nconst debug = debuglib('@expression/core:decorators/transform')\n\n/**\n * Apply transformations on method arguments.\n */\nexport const Transform = { IN, OUT }\nexport default Transform\n\n\n/**\n * Map/transform function arguments before actual function call.\n */\nexport function IN() {\n    const transformers = Array.from(arguments)\n    return function(target, name, descriptor) {\n        if (!descriptor) throw new Error(`@Transform operations can only be performed on method arguments.`)\n        \n        const fn = descriptor.value\n        descriptor.value = async function() {\n            const args = Array.from(arguments)\n            debug(`Called @Transform.IN with ${transformers.length} transformers for ${args.length} arguments`)\n            const values = await transform_in(transformers, args)\n            debug(`@Transform.IN on ${name} returned: `, values)\n            return await fn.apply(this, values)\n        }\n\n        return descriptor\n    }\n}\n\n/**\n * Map/transform a function return value.\n * If the return value of the function is an array, the transform functions\n * will be applied to each element of the array.\n */\nexport function OUT() {\n    const transformers = Array.from(arguments)\n    let attribute\n    if (transformers[0] && typeof transformers[0] === 'string') //:\n        attribute = trasformers.shift()\n\n    return function(target, name, descriptor) {\n        if (!descriptor) throw new Error(`@Transform operations can only be performed on method response.`)\n        debug(`Configuring @Transform on ${target.name||''}::${descriptor.name}`)\n\n        const fn = descriptor.value\n        descriptor.value = async function() {\n            const args = Array.from(arguments)\n            const data = await fn.apply(this, args)\n            debug(\"Received data to transform\", data)\n            return await transform(transformers, data)\n        }\n\n        return descriptor\n    }\n}\n\n\n/**\n * Map/transform a function return value.\n * If the return value of the function is an array, the transform functions\n * will be applied to each element of the array.\n */\nexport function Aggregate() {\n    const aggregators = Array.from(arguments)\n    let attribute\n    if (aggregators[0] && typeof aggregators[0] === 'string') //:\n        attribute = aggregators.shift()\n\n    return function(target, name, descriptor) {\n        if (!descriptor) throw new Error(`@Aggregate operations can only be performed on method resposne.`)\n        debug(`Configuring @Aggregate on ${target.name||''}::${descriptor.name}`)\n\n        const fn = descriptor.value\n        descriptor.value = async function aggregate() {\n            const ops = []\n            const args = Array.from(arguments)\n            const data = await fn.apply(this, args)\n\n            for (let aggregator of aggregators) {\n                debug(`@Aggregate is running aggregator: ${aggregator.name}`)\n                ops.push(aggregator((attribute && _.get(data, attribute) || data)))\n            }\n\n            for (let op of ops) {\n                if (attribute) _.merge(_.get(data, attribute), await op)\n                else _.merge(data, await op)\n            }\n            \n            return data\n        }\n\n        return descriptor\n    }\n}\n\n\n/**\n * Support function for actual IN parameters transformations (N-N)\n */\nasync function transform_in(transformers = [], args = []) {\n    // array explosion\n    if (!Array.isArray(args)) throw new Error(`Argument list in @Transform.IN must be an array. Got: ${typeof args}`)\n\n    const res = []\n    for (let arg of args) {\n        const transformer = transformers.shift()\n        let val\n        if (transformer) val = transform(transformer, arg)\n        else val = arg\n\n        res.push(val)\n    }\n    return await res\n}\n\n\n/**\n * General trasnformation support function (N-1)\n */\nasync function transform(transformers = [], data) {\n    if (!transformers) return data // return raw data if there are no transformers to be applied.\n\n    // data explosion for array processing scenarios\n    if (Array.isArray(data)) {\n        const res_arr = []\n        for (let record of data) {\n            res_arr.push(transform(transformers, record))\n        }\n\n        return await res_arr // await for all data record to be transformed\n    }\n\n    // transform logic\n    if (!Array.isArray(transformers)) transformers = [transformers]\n\n    let res = data\n    for (let transformer of transformers) {\n        debug(`Applying transformer ${transformer.name} to data`, data)\n        res = await transformer(data)\n    }\n    debug(\"Transformed data: \", res)\n    return res\n}",
+    "static": true,
+    "longname": "src/transform.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 46,
+    "kind": "variable",
+    "name": "debug",
+    "memberof": "src/transform.js",
+    "static": true,
+    "longname": "src/transform.js~debug",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/transform.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 47,
+    "kind": "variable",
+    "name": "Transform",
+    "memberof": "src/transform.js",
+    "static": true,
+    "longname": "src/transform.js~Transform",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/transform.js",
+    "importStyle": "{Transform}",
+    "description": "Apply transformations on method arguments.",
+    "lineNumber": 11,
+    "type": {
+      "types": [
+        "{\"IN\": *, \"OUT\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 48,
+    "kind": "function",
+    "name": "IN",
+    "memberof": "src/transform.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/transform.js~IN",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/transform.js",
+    "importStyle": "{IN}",
+    "description": "Map/transform function arguments before actual function call.",
+    "lineNumber": 17,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 49,
+    "kind": "function",
+    "name": "OUT",
+    "memberof": "src/transform.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/transform.js~OUT",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/transform.js",
+    "importStyle": "{OUT}",
+    "description": "Map/transform a function return value.\nIf the return value of the function is an array, the transform functions\nwill be applied to each element of the array.",
+    "lineNumber": 40,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 50,
+    "kind": "function",
+    "name": "Aggregate",
+    "memberof": "src/transform.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/transform.js~Aggregate",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/transform.js",
+    "importStyle": "{Aggregate}",
+    "description": "Map/transform a function return value.\nIf the return value of the function is an array, the transform functions\nwill be applied to each element of the array.",
+    "lineNumber": 67,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 51,
+    "kind": "function",
+    "name": "transform_in",
+    "memberof": "src/transform.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/transform.js~transform_in",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/transform.js",
+    "importStyle": null,
+    "description": "Support function for actual IN parameters transformations (N-N)",
+    "lineNumber": 102,
+    "params": [
+      {
+        "name": "transformers",
+        "optional": true,
+        "types": [
+          "*[]"
+        ],
+        "defaultRaw": [],
+        "defaultValue": "[]"
+      },
+      {
+        "name": "args",
+        "optional": true,
+        "types": [
+          "*[]"
+        ],
+        "defaultRaw": [],
+        "defaultValue": "[]"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 52,
+    "kind": "function",
+    "name": "transform",
+    "memberof": "src/transform.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/transform.js~transform",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/transform.js",
+    "importStyle": null,
+    "description": "General trasnformation support function (N-1)",
+    "lineNumber": 120,
+    "params": [
+      {
+        "name": "transformers",
+        "optional": true,
+        "types": [
+          "*[]"
+        ],
+        "defaultRaw": [],
+        "defaultValue": "[]"
+      },
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 53,
+    "kind": "file",
+    "name": "src/validations.js",
+    "content": "import jsonschema from 'jsonschema'\nimport Debugger from 'debug'\nimport _ from 'lodash'\n\nconst debug = new Debugger('@expression/core:validations')\n\n\nexport class ValidationErrors extends Error {\n    constructor(errors) {\n        super()\n        this.errors = errors\n        this.status = 400\n    }\n}\n\n/**\n * Explicit object representation of a validation error.\n */\nexport class ValidationError extends Error {\n    constructor(message, data) {\n        super()\n        _.merge(this, data)\n        this.status = 400 // bad format\n    }\n}\n\n\n/**\n * Adds static and dynamic $validate methods to a given class/object.\n * The $validate methods will take care of validating the object against the provided JSON schema.\n * Scope: class-level\n */\nexport function Schema(jsonSchema, dflt = {throwError: true}) {\n    return function(target, name, descriptor) {\n        if (!target || descriptor) throw new Error(\"@Schema decorator can only be used in a class.\")\n\n        function validate(src, options) {\n            options = _.merge({},dflt,options)\n            debug(`Validating JSON Schema on ${target.name}: `,jsonSchema, src)\n\n            // TODO: Fix this validation mechanism, it's too expensive.\n            const obj = {}\n            for (let prop of Object.keys(src)) {//; \n                debug(`Copying property ${prop} in ${target.name} to clear object`)\n                obj[prop] = src[prop]\n            }\n\n            const validation = jsonschema.validate(obj, jsonSchema)\n            if (validation.errors && validation.errors.length > 0) {\n                debug(`Validation errors found in ${target.name}: `, validation.errors)\n                if (options.throwError) {\n                    const error = new ValidationError\n                    error.errors = validation.errors\n                    throw error\n                }\n                else {\n                    return validation.errors\n                }\n            }\n\n            return []\n        }\n        target.prototype.$validate = function(obj, options = dflt) {\n            return validate(obj || this, options)\n        }\n        target.$validate = validate\n\n\n        target.prototype.$validateAll = function(arr, options) {\n            if (!arr) return true\n            options = _.merge({},dflt,options)\n\n            let errors = []\n            for (let i=0; i < arr.length; i++) {\n                const instanceErrors = target.$validate(arr[i], {throwError: false})\n                if (instanceErrors && instanceErrors.length) {\n                    errors[i] = instanceErrors\n                }\n            }\n            if (errors.length > 1) {\n                if (options.throwError) {\n                    const error = new ValidationErrors\n                    error.errors = errors\n                    throw error\n                }\n                else {\n                    return errors\n                }\n            }\n\n            return []\n        }\n\n\n        return target\n    }\n}\n\n/**\n * Validate arguments of a method against json-schemas before allowing its execution.\n * Scope: method-level\n */\nexport function ValidateSchema(...schemas) {\n    return function(target, name, descriptor) {\n        if (!descriptor) return Schema(target, name, descriptor)\n\n        const fn = descriptor.value || descriptor.set\n        const attr = (descriptor.value) ? 'value' : 'set'\n\n        descriptor[attr] = function(...args) {\n            let errors = []\n            for (let i=0; i < args.length; i++) {\n                const arg = args[i]\n                const schema = schemas[i]\n                \n                if (schema) {\n                    const validation = jsonschema.validate(arg, schema) \n                    if (validation.errors) errors = errors.concat(validation.errors)\n                }\n            }\n\n            if (errors.length > 0) {\n                const error = new ValidationError\n                error.errors = errors\n                throw error\n            }\n\n            return fn.apply(this, args)\n        }\n\n        return descriptor\n    }\n}",
+    "static": true,
+    "longname": "src/validations.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 54,
+    "kind": "variable",
+    "name": "debug",
+    "memberof": "src/validations.js",
+    "static": true,
+    "longname": "src/validations.js~debug",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/validations.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "debug~Debugger"
+      ]
+    }
+  },
+  {
+    "__docId__": 55,
+    "kind": "class",
+    "name": "ValidationErrors",
+    "memberof": "src/validations.js",
+    "static": true,
+    "longname": "src/validations.js~ValidationErrors",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/validations.js",
+    "importStyle": "{ValidationErrors}",
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "Error"
+    ]
+  },
+  {
+    "__docId__": 56,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/validations.js~ValidationErrors",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/validations.js~ValidationErrors#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "errors",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 57,
+    "kind": "member",
+    "name": "errors",
+    "memberof": "src/validations.js~ValidationErrors",
+    "static": false,
+    "longname": "src/validations.js~ValidationErrors#errors",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 58,
+    "kind": "member",
+    "name": "status",
+    "memberof": "src/validations.js~ValidationErrors",
+    "static": false,
+    "longname": "src/validations.js~ValidationErrors#status",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 59,
+    "kind": "class",
+    "name": "ValidationError",
+    "memberof": "src/validations.js",
+    "static": true,
+    "longname": "src/validations.js~ValidationError",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/validations.js",
+    "importStyle": "{ValidationError}",
+    "description": "Explicit object representation of a validation error.",
+    "lineNumber": 18,
+    "interface": false,
+    "extends": [
+      "Error"
+    ]
+  },
+  {
+    "__docId__": 60,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/validations.js~ValidationError",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/validations.js~ValidationError#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "message",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 61,
+    "kind": "member",
+    "name": "status",
+    "memberof": "src/validations.js~ValidationError",
+    "static": false,
+    "longname": "src/validations.js~ValidationError#status",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 62,
+    "kind": "function",
+    "name": "Schema",
+    "memberof": "src/validations.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/validations.js~Schema",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/validations.js",
+    "importStyle": "{Schema}",
+    "description": "Adds static and dynamic $validate methods to a given class/object.\nThe $validate methods will take care of validating the object against the provided JSON schema.\nScope: class-level",
+    "lineNumber": 31,
+    "params": [
+      {
+        "name": "jsonSchema",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "dflt",
+        "optional": true,
+        "types": [
+          "{\"throwError\": boolean}"
+        ],
+        "defaultRaw": {
+          "throwError": true
+        },
+        "defaultValue": "{\"throwError\":true}"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 63,
+    "kind": "function",
+    "name": "ValidateSchema",
+    "memberof": "src/validations.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/validations.js~ValidateSchema",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/validations.js",
+    "importStyle": "{ValidateSchema}",
+    "description": "Validate arguments of a method against json-schemas before allowing its execution.\nScope: method-level",
+    "lineNumber": 98,
+    "params": [
+      {
+        "name": "schemas",
+        "types": [
+          "...*"
+        ],
+        "spread": true
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 64,
+    "kind": "file",
+    "name": "src/web-security.js",
+    "content": "// TODO: how to add these decorators to work on class-level?\n// TODO: how to add these decorators to work on class-level with deny-first approach? (@Public / @AcceptPublic ?)\n\nconst debug = require('debug')('primavera:web-security')\n\nimport _ from 'lodash'\nimport { HttpError } from './web'\n\nexport function RequiresRole(roles, roleFetcher, userFetcher) {\n    return function(target, name, descriptor) {\n        if (!descriptor) throw new Error('@RequiresAuth can only be used on method-level.')\n        roleFetcher = roleFetcher || 'roles'\n        userFetcher = userFetcher || 'user'\n\n        const user = fetchUserFromContext(userFetcher)\n        const userRoles = (typeof roleFetcher == 'function') ? roleFetcher.apply(this, [user]) : _.get(user, roleFetcher)\n\n        for (let allowed of roles)\n            if (userRoles.find(allowed)) //:\n                return;\n\n        throw HttpError.forbidden('Authenticated user does not have any of the required roles.')\n\n    }\n}\n\nexport function RequiresAuth(from = 'user') {\n    return function(target, name, descriptor) {\n        if (!descriptor) throw new Error('@RequiresAuth can only be used on method-level.')\n\n        const srcFn = descriptor.value\n        descriptor.value = function(...args) {\n            fetchUserFromContext.apply(this, [from])\n        }\n    }\n}\n\n\nfunction fetchUserFromContext(from) {\n\tlet user\n\n    if (typeof from == 'function') {\n    \tuser = from.apply(this)//:\n    }\n    else {\n\t    if (!this.$$context || !this.$$context.$request) //:\n\t        throw new Error('Cannot access web-context from @RequiresAuth, are you using primavera/web?')\n\n\t    const $request = this.$$context.$request\n\t    user = $request[from || 'user'] || $request.session[from || 'user']\n\t}\n\n\tif (!user) {\n\t\tdebug('User is not authenticated ', from)\n\t\tthrow HttpError.unauthorized('User is not authenticated.')\n\t}\n\n\treturn user\n}",
+    "static": true,
+    "longname": "src/web-security.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 65,
+    "kind": "variable",
+    "name": "debug",
+    "memberof": "src/web-security.js",
+    "static": true,
+    "longname": "src/web-security.js~debug",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/web-security.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 66,
+    "kind": "function",
+    "name": "RequiresRole",
+    "memberof": "src/web-security.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web-security.js~RequiresRole",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web-security.js",
+    "importStyle": "{RequiresRole}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "roles",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "roleFetcher",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "userFetcher",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 67,
+    "kind": "function",
+    "name": "RequiresAuth",
+    "memberof": "src/web-security.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web-security.js~RequiresAuth",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web-security.js",
+    "importStyle": "{RequiresAuth}",
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "from",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": "user",
+        "defaultValue": "user"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 68,
+    "kind": "function",
+    "name": "fetchUserFromContext",
+    "memberof": "src/web-security.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web-security.js~fetchUserFromContext",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/web-security.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 36,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "from",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 69,
+    "kind": "file",
+    "name": "src/web.js",
+    "content": "const debug = require('debug')('primavera:web')\nimport _ from 'lodash'\n// import express from 'express'\nimport {Before,After} from './core'\n\n\n/**\n * Lazy initialization of actual express routes.\n */\nconst initialization_stack = []\nconst router = new Proxy({}, {\n    get(target, what) {\n        return function() {\n            debug(`Adding instruction to initialization stack: ${what} (${arguments})`)\n            initialization_stack.push({method: what, args: Array.from(arguments)})\n        }\n    }\n})\n\n// export function start(app, path) {\n//     const _router = express.Router()\n//     for (let instruction of initialization_stack) {\n//         _router[instruction.method].apply(_router,instruction.args)\n//     }\n//     app.use(path || \"/\", _router)\n// }\n// \nexport function start(router) {\n    debug('Initializing routes...')\n    for (let instruction of initialization_stack) {\n        router[instruction.method].apply(router,instruction.args)\n        debug('Added route ', instruction.args)\n    }\n}\n\n/**\n * Just bridge functions to already existing functionality.\n */\nexport const Validate = Before\nexport const Project = After\n\n\nexport function Session(prop) {\n    var path = ['$request.session']\n    if (prop && prop.trim()) path.push(prop)\n    path = path.join('.')\n\n    return Context(path)\n}\n\nexport function Request(prop) {\n    var path = ['$request']\n    if (prop && prop.trim()) path.push(prop)\n    path = path.join('.')\n\n    return Context(path)\n}\n\n\n/**\n * Set HTTP status on successful response.\n * @param {[type]} status [description]\n */\nexport function HttpStatus(status) {\n    return function (target, name, descriptor) {\n        debug(`Setting HttpStatus ${status} on ${descriptor.name} success`, descriptor)\n        descriptor.value.$$httpSuccessStatus = status \n        return descriptor\n    }\n}\n_.merge(HttpStatus, {\n    OK: 200,\n    CREATED: 201,\n    ACCEPTED: 202,\n    NON_AUTHORITATIVE: 203,\n    NO_CONTENT: 204,\n    RESET_CONTENT: 205,\n    PARTIAL_CONTENT: 206,\n    MULTI_STATUS: 207,\n    MULTIPLE_CHOICES: 300,\n    MOVED_PERMANENTLY: 301,\n    FOUND: 302,\n    SEE_OTHER: 303,\n    NOT_MODIFIED: 304,\n    USE_PROXY: 305,\n    TEMPORARY_REDIRECT: 307,\n    PERMANENT_REDIRECT: 308,\n    BAD_REQUEST: 400,\n    UNAUTHORIZED: 401,\n    PAYMENT_REQUIRED: 402,\n    FORBIDDEN: 403,\n    NOT_FOUND: 404,\n    METHOD_NOT_ALLOWED: 405,\n    NOT_ACCCEPTABLE: 406,\n    PROXY_AUTH_REQUIRED: 407,\n    REQUEST_TIMEOUT: 408,\n    CONFLICT: 409,\n    GONE: 401,\n    PRECONDITION_FAILED: 412,\n    EXPECTATION_FAILED: 417,\n    SERVER_ERROR: 500,\n    NOT_IMPLEMENTED: 501,\n    BAD_GATEWAY: 502,\n    SERVICE_UNAVAILABLE: 503,\n    GATEWAY_TIMEOUT: 504\n})\n\nexport function HttpError() {\n    return function(target, name, descriptor) {\n        return descriptor\n    }\n}\n\nfor (let statusCode in HttpStatus) {\n    const camelized = _.camelCase(statusCode)\n    HttpStatus[camelized] = function(message) {\n        let status = HttpStatus[statusCode]\n        return {message, status}\n    }\n    HttpError[camelized] = function(message) {\n        throw HttpStatus[camelized](message)\n    }\n}\n\n\n/**\n * Register within a given Controller/Method pair.\n * Router registration will register the route in ExpressJS and transform\n * payload, query parameters and response accordingly.\n */\nexport function Route(routes) {\n\n    if (!Array.isArray(routes)) routes = [routes]\n\n    return function(target, name, descriptor) {\n    \tif (!descriptor) throw new Error('@Route can only be set on a method.')\n\n        for (let route of routes) {\n        \tconst parts = route.match(/[a-zA-Z0-9-_./\\*\\+:+]+/ig)\n        \tif (parts.length < 2) throw new Error(`${route} is not a valid routing expression.`)\n\n            const method = parts[0].toLowerCase()\n            let path = parts[1] || ''\n            if (path.indexOf('/')==0) path = path.substring(1)\n\n            debug(`@Route ${route} will be attached to ${target.constructor.name}::${name}()`)\n             \n            if (!target.$$routes) target.$$routes = []\n\n            target.$$routes.push({method, path, _fn: name || descriptor })\n            target.$$routes = target.$$routes\n        }\n\n        return descriptor\n    }\n}\n\n\n// -------------------------------------------------------------\n// Additional exports for syntax sugar\n// -------------------------------------------------------------\nexport const GetRequest     = routeWith('GET')\nexport const PostRequest    = routeWith('POST')\nexport const PutRequest     = routeWith('PUT')\nexport const PatchRequest   = routeWith('PATCH')\nexport const ListRequest    = routeWith('LIST')\nexport const DeleteRequest  = routeWith('DELETE')\nexport const OptionsRequest  = routeWith('OPTIONS')\nexport const AllRequests    = routeWith('USE')\n_.merge(Route, {USE: AllRequests, GET: GetRequest,POST: PostRequest, PUT: PutRequest, PATCH: PatchRequest, LIST: ListRequest, DELETE: DeleteRequest, OPTIONS: OptionsRequest})\n\n// Build command-based @Route instructions\nfunction routeWith(command) {\n    return function(path, config) {\n        return Route(`${command} ${path || '/'}`, config)\n    }\n}\n\n/**\n * Register a given class as an express controller component.\n */\nexport function Controller(config) {\n    var prefix = config && config.prefix || '';\n    if (prefix && prefix.indexOf('/')!=0) prefix = `/${prefix}`\n\n    return function (target, name, descriptor) {\n        if (!target) throw new Error(`@Controller decorator can only be used in a class.`)\n\n        const routes = target.$$routes || target.prototype.$$routes || []\n        for (let route of routes) {\n            const absolute = [prefix,route.path].join('/')\n            debug(`@Controller is setting route ${route.method} -> ${absolute}`)\n\n            router[route.method.toLowerCase()](absolute, async function (req,res, next) {\n                try {\n                    const instance = (target.constructor) ? new target() : target //Container.get(target.$$name || target.constructor.name)\n                    // Inject request context if required.\n                    instance.$$context = {$request:req,$response:res, $this: instance}\n\n                    const merged = [Object.assign({}, req.query, req.params), req.body] // named url params take precedence\n                    debug(`Invoking method ${target.name}::${route._fn}()`)\n\n                    const _fn = instance[route._fn]\n                    const result = await _fn.apply(instance, merged)\n\n                    // If is a promise, treat as such.\n                    debug(\"Checking if there's a specific http-status to be sent on success: \", _fn.$$httpSuccessStatus)\n                    if (_fn.$$httpSuccessStatus)\n                        res.status(_fn.$$httpSuccessStatus)\n\n                    return res.send(result)\n                    // next(req, res)\n                }\n                catch (e) {\n                    console.error(e)\n                    res.status(e.status || 500)\n                    return res.send(e.errors || e.message)\n                }\n            })\n\n        }\n\n        debug(`@Controller ${target.name} was setup and routes were added.`)\n        return target;\n    }\n}\n\n\n/**\n * Set a given request context attribute as a controller class attribute.\n */\nexport function Context(path) {\n    return function (target, name, descriptor) {\n        debug(`@Context binding points to ${path} in ${target.name}::${name}`)\n        \n        const isFunction = !!descriptor.value\n        debug(\"@Context use function decorator: \", isFunction)\n        const overwrite = isFunction ? 'value' : 'get'\n        var _fn = descriptor[overwrite]\n        descriptor[overwrite] = function() {\n            let ctxval;\n            if (!path) ctxval = this.$$context\n            if (typeof path === 'string') { //  instanceof String) {\n                // debug(`In @Context(${path}) {this} object is `, this)\n                ctxval = _.get(this.$$context, path)\n            }\n            if (typeof path === 'object') {\n                ctxval = {}\n            }\n\n            if (isFunction) return _fn.apply(this, [ctxval])\n            return ctxval\n        }\n    }\n}\n\n\n/**\n * Register a given class as an express middleware component.\n */\nexport function Middleware(config) {\n    var prefix = config && config.prefix || '';\n    if (prefix && prefix.indexOf('/')!=0) prefix = `/${prefix}`\n\n    return function (target, name, descriptor) {\n        if (!target) throw new Error(`@Middleware decorator can only be used in a class.`)\n\n        const routes = target.$$routes || target.prototype.$$routes || []\n        for (let route of routes) {\n            const absolute = [prefix,route.path].join('/')\n            debug(`@Middleware is setting route ${route.method} -> ${absolute}`)\n\n            if (route.method=='*') route.method = 'use'\n\n            router[route.method.toLowerCase()](absolute, async function(req,res,next) {\n                const instance = (target.constructor) ? new target() : target \n                // Inject request context if required.\n                instance.$$context = {$request:req,$response:res,$this: instance}\n\n                try {\n                    const result = await instance[route._fn].apply(instance, [req, res])\n                    return await next()\n                }\n                catch (e) {\n                    console.error(e)\n                    res.status(e.status || 500)\n                    return res.send(e.errors || e.message)\n                }\n            })\n        }\n\n        debug(`@Middleware ${target.name} was setup and routes were added.`)\n        return target;\n    }\n}",
+    "static": true,
+    "longname": "src/web.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 70,
+    "kind": "variable",
+    "name": "debug",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~debug",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/web.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 1,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 71,
+    "kind": "variable",
+    "name": "initialization_stack",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~initialization_stack",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/web.js",
+    "importStyle": null,
+    "description": "Lazy initialization of actual express routes.",
+    "lineNumber": 9,
+    "type": {
+      "types": [
+        "*[]"
+      ]
+    }
+  },
+  {
+    "__docId__": 72,
+    "kind": "variable",
+    "name": "router",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~router",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/web.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "Proxy"
+      ]
+    }
+  },
+  {
+    "__docId__": 73,
+    "kind": "function",
+    "name": "start",
+    "memberof": "src/web.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web.js~start",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{start}",
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "router",
+        "types": [
+          "*"
+        ]
+      }
+    ]
+  },
+  {
+    "__docId__": 74,
+    "kind": "variable",
+    "name": "Validate",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~Validate",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{Validate}",
+    "description": "Just bridge functions to already existing functionality.",
+    "lineNumber": 38,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 75,
+    "kind": "variable",
+    "name": "Project",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~Project",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{Project}",
+    "description": null,
+    "lineNumber": 39,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 76,
+    "kind": "function",
+    "name": "Session",
+    "memberof": "src/web.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web.js~Session",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{Session}",
+    "description": null,
+    "lineNumber": 41,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "prop",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 77,
+    "kind": "function",
+    "name": "Request",
+    "memberof": "src/web.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web.js~Request",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{Request}",
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "prop",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 78,
+    "kind": "function",
+    "name": "HttpStatus",
+    "memberof": "src/web.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web.js~HttpStatus",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{HttpStatus}",
+    "description": "Set HTTP status on successful response.",
+    "lineNumber": 61,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "[type]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "status",
+        "description": "[description]"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 79,
+    "kind": "function",
+    "name": "HttpError",
+    "memberof": "src/web.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web.js~HttpError",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{HttpError}",
+    "description": null,
+    "lineNumber": 105,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 80,
+    "kind": "function",
+    "name": "Route",
+    "memberof": "src/web.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web.js~Route",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{Route}",
+    "description": "Register within a given Controller/Method pair.\nRouter registration will register the route in ExpressJS and transform\npayload, query parameters and response accordingly.",
+    "lineNumber": 127,
+    "params": [
+      {
+        "name": "routes",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 81,
+    "kind": "variable",
+    "name": "GetRequest",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~GetRequest",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{GetRequest}",
+    "description": null,
+    "lineNumber": 157,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 82,
+    "kind": "variable",
+    "name": "PostRequest",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~PostRequest",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{PostRequest}",
+    "description": null,
+    "lineNumber": 158,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 83,
+    "kind": "variable",
+    "name": "PutRequest",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~PutRequest",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{PutRequest}",
+    "description": null,
+    "lineNumber": 159,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 84,
+    "kind": "variable",
+    "name": "PatchRequest",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~PatchRequest",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{PatchRequest}",
+    "description": null,
+    "lineNumber": 160,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 85,
+    "kind": "variable",
+    "name": "ListRequest",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~ListRequest",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{ListRequest}",
+    "description": null,
+    "lineNumber": 161,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 86,
+    "kind": "variable",
+    "name": "DeleteRequest",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~DeleteRequest",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{DeleteRequest}",
+    "description": null,
+    "lineNumber": 162,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 87,
+    "kind": "variable",
+    "name": "OptionsRequest",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~OptionsRequest",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{OptionsRequest}",
+    "description": null,
+    "lineNumber": 163,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 88,
+    "kind": "variable",
+    "name": "AllRequests",
+    "memberof": "src/web.js",
+    "static": true,
+    "longname": "src/web.js~AllRequests",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{AllRequests}",
+    "description": null,
+    "lineNumber": 164,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 89,
+    "kind": "function",
+    "name": "routeWith",
+    "memberof": "src/web.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web.js~routeWith",
+    "access": null,
+    "export": false,
+    "importPath": "primavera/src/web.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 168,
+    "undocument": true,
+    "unknown": [
+      {
+        "tagName": "@_undocument",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "name": "command",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 90,
+    "kind": "function",
+    "name": "Controller",
+    "memberof": "src/web.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web.js~Controller",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{Controller}",
+    "description": "Register a given class as an express controller component.",
+    "lineNumber": 177,
+    "params": [
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 91,
+    "kind": "function",
+    "name": "Context",
+    "memberof": "src/web.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web.js~Context",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{Context}",
+    "description": "Set a given request context attribute as a controller class attribute.",
+    "lineNumber": 223,
+    "params": [
+      {
+        "name": "path",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 92,
+    "kind": "function",
+    "name": "Middleware",
+    "memberof": "src/web.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/web.js~Middleware",
+    "access": null,
+    "export": true,
+    "importPath": "primavera/src/web.js",
+    "importStyle": "{Middleware}",
+    "description": "Register a given class as an express middleware component.",
+    "lineNumber": 252,
+    "params": [
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 94,
+    "kind": "external",
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 95,
+    "kind": "external",
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 96,
+    "kind": "external",
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 97,
+    "kind": "external",
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 98,
+    "kind": "external",
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 99,
+    "kind": "external",
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 100,
+    "kind": "external",
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 101,
+    "kind": "external",
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 102,
+    "kind": "external",
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 103,
+    "kind": "external",
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 104,
+    "kind": "external",
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 105,
+    "kind": "external",
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 106,
+    "kind": "external",
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 107,
+    "kind": "external",
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 108,
+    "kind": "external",
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 109,
+    "kind": "external",
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 110,
+    "kind": "external",
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 111,
+    "kind": "external",
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 112,
+    "kind": "external",
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 113,
+    "kind": "external",
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 114,
+    "kind": "external",
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 115,
+    "kind": "external",
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 116,
+    "kind": "external",
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 117,
+    "kind": "external",
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 118,
+    "kind": "external",
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 119,
+    "kind": "external",
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 120,
+    "kind": "external",
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 121,
+    "kind": "external",
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 122,
+    "kind": "external",
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 123,
+    "kind": "external",
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 124,
+    "kind": "external",
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 125,
+    "kind": "external",
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 126,
+    "kind": "external",
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 127,
+    "kind": "external",
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 128,
+    "kind": "external",
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 129,
+    "kind": "external",
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 130,
+    "kind": "external",
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 131,
+    "kind": "external",
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 132,
+    "kind": "external",
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 133,
+    "kind": "external",
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 134,
+    "kind": "external",
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 135,
+    "kind": "external",
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 136,
+    "kind": "external",
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 137,
+    "kind": "external",
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 138,
+    "kind": "external",
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 139,
+    "kind": "external",
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 140,
+    "kind": "external",
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": "",
+    "lineNumber": 193,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 142,
+    "kind": "external",
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 143,
+    "kind": "external",
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 144,
+    "kind": "external",
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 145,
+    "kind": "external",
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 146,
+    "kind": "external",
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 147,
+    "kind": "external",
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 148,
+    "kind": "external",
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 149,
+    "kind": "external",
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "static": true,
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "lineNumber": 34,
+    "builtinExternal": true
+  }
+]

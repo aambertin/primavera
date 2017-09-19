@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/core.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validations.js~ValidationError.html">ValidationError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validations.js~ValidationErrors.html">ValidationErrors</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-After">After</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Before">Before</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Bind">Bind</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Inject">Inject</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Injectable">Injectable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Property">Property</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PropertySources">PropertySources</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Self">Self</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SmartPooling">SmartPooling</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resolve">Resolve</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ResolveWith">ResolveWith</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-register">register</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-resolve">resolve</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-load">load</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Aggregate">Aggregate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-IN">IN</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-OUT">OUT</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Schema">Schema</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ValidateSchema">ValidateSchema</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-RequiresAuth">RequiresAuth</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-RequiresRole">RequiresRole</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Context">Context</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Controller">Controller</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HttpError">HttpError</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HttpStatus">HttpStatus</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Middleware">Middleware</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Request">Request</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Route">Route</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Session">Session</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-start">start</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Adapter">Adapter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Component">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Module">Module</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Project">Project</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Service">Service</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Singleton">Singleton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validate">Validate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Transform">Transform</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AllRequests">AllRequests</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DeleteRequest">DeleteRequest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GetRequest">GetRequest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-ListRequest">ListRequest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-OptionsRequest">OptionsRequest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PatchRequest">PatchRequest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PostRequest">PostRequest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Project">Project</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PutRequest">PutRequest</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validate">Validate</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/core.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;
+const debug = require(&apos;debug&apos;)(&apos;primavera:core&apos;)
+import _ from &apos;lodash&apos;
+import {default as jsonschema} from &apos;jsonschema&apos;
+import stringify from &apos;json-stable-stringify&apos;
+import Container from &apos;./container&apos;
+
+
+/**
+ * Register a component within the in-memory container for use with @Inject.
+ * It can only be used on a class-level.
+ * 
+ * @param {string} alias alias given to the component to identify within the in-memory container.
+ * @public
+ * 
+ * @example
+ * @Injectable(&apos;services/injectable&apos;)
+ * class InjectableComponent { ... }
+ * class DepentantComponent {
+ *     @Inject(&apos;services/injectable&apos;)
+ *     get injectable() {}
+ * }
+ */
+export function Injectable(alias) {
+
+    return function(target, name, descriptor) {
+        if (!target) throw new Error(`@Injectable can only be set on a class.`)
+        debug(`@Injectable ${target.name} stored in container as ${alias}`)
+
+        Container.set(alias || target, target)
+
+        return target
+    }
+}
+
+
+/**
+ * @see #static-function-Injectable
+ * @public
+ * @type {decorator}
+ */
+export const Service    = Injectable
+
+/**
+ * @see #static-function-Injectable
+ * @public
+ * @type {decorator}
+ */
+export const Component  = Injectable
+
+/**
+ * @see #static-function-Injectable
+ * @public
+ * @type {decorator}
+ */
+export const Module     = Injectable
+
+/**
+ * @see #static-function-Injectable
+ * @public
+ * @type {decorator}
+ */
+export const Adapter    = Injectable
+
+
+/**
+ * Apply one or more decorators BEFORE a method is executed.
+ * Decorators can transform the original arguments accessing the _arguments_ of the function,
+ * or by providing an array as return value which will override the entire _arguments chain_
+ * to be passed to the next intercepting function or the target method.
+ *
+ * @type {decorator}
+ * @param {...function} fns functions to be executed before the target method
+ * @public
+ * 
+ * @example
+ * @Before(() =&gt; debug(&apos;do nothing&apos;))
+ * function somefunction() { ... }
+ *
+ * @example
+ * @Before((...args) =&gt; { return [&apos;altered&apos;]})
+ * testfunction(...args) {
+ *     // args[0] == &apos;altered&apos;
+ * }
+ *
+ * @example
+ * @Before((...args) =&gt; { 
+ *     const altered = [...args]
+ *     altered[0] = &apos;altered&apos;
+ * })
+ * testfunction(...args) {
+ *     // args[0] == &apos;altered&apos;
+ * }
+ */
+export function Before(...fns) {
+    return function(target, name, descriptor) {
+        const previous = descriptor.value
+        descriptor.value = async function(...args) {
+            let responseChain
+            for (let fn of fns) {
+                if (typeof fn == &apos;string&apos; &amp;&amp; fn.startsWith(&apos;$this&apos;)) {
+                    debug(`@Before is fetching instance function from ${fn} with this`, this)
+                    fn = _.get(this, fn.substring(fn.indexOf(&apos;.&apos;)))
+                }
+                debug(`@Before ${target.constructor.name}.${name}, executing ${fn.name}`)
+                responseChain = await fn.apply(this, args)
+                if (responseChain &amp;&amp; !Array.isArray(responseChain)) responseChain = [responseChain]
+            }
+            return await (previous).apply(this, responseChain || args)
+        }
+
+        return descriptor
+    }
+}
+
+/**
+ * Alias for @Before used for syntactic sugar.
+ * @type {decorator}
+ */
+export const Validate = Before
+
+/**
+ * Apply one or more functions AFTER a method is executed.
+ * Decorators can transform or choose to return a different return value by just returning something
+ * or by altering the attributes of a returned object.
+ *
+ * Each function will receive as only parameter the return value of the previous one.
+ * If no value is returned, the previous non-undefined return value will be kept.
+ *
+ * @type {decorator}
+ * @param {...function} fns functions to be executed before the target method
+ * @public
+ * 
+ * @example
+ * @After(() =&gt; debug(&apos;do nothing&apos;))
+ * function testfunction() { return &apos;original&apos; }
+ * testfunction() == &apos;original&apos;
+ *
+ * @example
+ * @After((value) =&gt; { return &apos;altered&apos;})
+ * testfunction() { return &apos;original&apos; }
+ * testfunction() == &apos;altered&apos;
+ *
+ * @example
+ * @After((obj) =&gt; { 
+ *     obj.altered = true
+ * })
+ * testfunction() { return {altered:false} }
+ * testfunction().altered == true
+ */
+export function After(...fns) {
+    return function(target, name, descriptor) {
+        const previous = descriptor.value;
+        descriptor.value = async function(...args) {
+            let response, current
+            response = current = await previous.apply(this, args)
+
+            for (let fn of fns) {
+                debug(`@After ${target.constructor.name}.${name}, executing ${fn.name || &apos;anonymous function&apos;}`)
+                current = await fn.apply(this, [response])
+                if (current != undefined) {//:
+                    debug(`@After ${target.constructor.name}.${name}, ${fn.name || &apos;anonymous function&apos;} returned `, current)
+                    response = current
+                }
+            }
+            return response
+        }
+
+        return descriptor
+    }
+}
+/**
+ * Alias for Before used for syntactic sugar.
+ * 
+ * @see Before
+ * @public
+ * @type {decorator}
+ */
+export const Project = After
+
+
+
+
+/**
+ * Smart pooling describes the ability to keep a pool of &quot;Singletons&quot;
+ * based on their instantiation parameters.
+ * 
+ * This helps optimize creation/destruction of objects in the container,
+ * reducing memory footpring as well as saving resources by reducing
+ * object creation operations.
+ *
+ * To be used toogether with @Injectable or one of its aliases.
+ *
+ * @public
+ * 
+ * @example
+ * @SmartPooling()
+ * class PooledClass {
+ *     constructor() {
+ *         this.random = Math.random()
+ *     }
+ * }
+ *
+ * ...
+ * let base = new PooledClass({ value: 1 })
+ * let same = new PooledClass({ value: 1 })
+ * let different = new PooledClass({ value: 2 })
+ *
+ * base.random == same.random
+ * base.random == different.random 
+ */
+export function SmartPooling() {
+    const instances = {}
+    return function (target, name, descriptor) {
+        if (!target || descriptor) throw new Error(&quot;@SmartPooling can only be set on a class.&quot;)
+
+        const SmartPoolingProxy = function(...args) {
+            const hash = args.length &gt; 0 ? stringify(args) : 0
+            const UUID = `${target}_${hash}`
+            if (!instances[UUID])  //:
+                instances[UUID] = new target(...args)
+
+            debug(`@SmartPooling instance of ${target.name} ${hash}`, instances[UUID])
+
+            return instances[UUID]
+
+        }
+
+        Object.setPrototypeOf(SmartPoolingProxy, target) 
+        
+        return SmartPoolingProxy
+
+    }
+}
+/**
+ * Alias of @SmartPooling
+ * 
+ * @public
+ * @type {decorator}
+ */
+export const Singleton = SmartPooling
+
+/**
+ * Inject a contained instance into a given component.
+ * If the dependency can&apos;t be found, it will create a SmartProxy
+ * to delay instantiation until the dependency is first accessed (lazy initialization).
+ *
+ * @public
+ * @param {string} alias is the alias of the component within the in-memory container
+ * @param {[]} args arguments to initialize the instance of the component (if required or desired)
+ */
+export function Inject(config, args) {
+    if (args &amp;&amp; !Array.isArray(args)) args = [args]
+    const alias = (config &amp;&amp; config.path) || config || false
+    return function(target, name, descriptor) {
+        if (!target || !name || !descriptor) throw new Error(&quot;@Inject can only be used on an attribute level.&quot;)
+
+        const _fn = descriptor.get
+        function wrapper() {
+            const _clazz = Container.get(alias || name)
+            debug(`@Inject dependency in ${target.constructor.name}.${name} (${_clazz.name})`)
+            return new _clazz(...(args || []))
+        }
+        descriptor.get = wrapper
+        return descriptor
+    }
+}
+
+
+/**
+ * Bind a given object element to the decorated method.
+ *
+ * @public
+ * @param {...string} fixtures the fixtures to be applied. It can reference attributes or methods on the instance level.
+ *
+ * @example
+ * @Bind(&apos;myAttribute&apos;)
+ * testfunction (value) {
+ *     value == this.myAttribute
+ * }
+ *
+ * @example
+ * @Bind(&apos;nested.attribute&apos;)
+ * testfunction (value) {
+ *     value == this.nested.attribute
+ * }
+ *
+ * @example
+ * @Bind(&apos;someFunction&apos;)
+ * testfunction (value) {
+ *     value == this.someFunction()
+ * }
+ *
+ * @example
+ * @Bind(&apos;someFunction().nestedAttribute&apos;)
+ * testfunction (value) {
+ *     value == this.someFunction().nestedAttribute
+ * }
+ *
+ * 
+ */
+export function Bind(...fixtures) {
+    return function (target, name, descriptor) {
+        debug(`@Bind ${fixtures} on ${target.constructor.name}::${name}`)
+        
+        const _fn = descriptor.value
+
+        descriptor.value = async function(...args) {
+            const bundle = []
+            for (let fixture of fixtures) {
+                let bound = (fixture instanceof Function) ? fixture : false
+                
+                if (!bound) {
+                    const self = this
+                    if (/\(\)/.test(fixture))
+                        bound = _.result(self, fixture.replace(&apos;()&apos;,&apos;&apos;))
+                    else {
+                        bound = _.get(self, fixture)
+                    }
+                }
+
+                if (bound instanceof Function) {
+                    const self = this
+                    const _bound = bound
+                    // Force &quot;this&quot; binding in fixture (.bind doesn&apos;t really bind for some reason)
+                    bound = async function(...args) {
+                        return await _bound.apply(self, args)
+                    }
+                }
+
+                bundle.push(bound)
+            }
+
+            const params = [...bundle, ...args]
+            debug(`@Bind is invoking the source function ${_fn.name} with params`, params)
+            return await _fn.apply(this, params)
+        }
+
+        return descriptor
+    }
+}
+
+
+/**
+ * Indicates the potential sources of properties/values in priority order.
+ * To be used together with @Property
+ *
+ * @PropertySources can take any object (and will inspect it) or _resolver function_.
+ * It will iterate through such sources until the requested @Property is resolved.
+ * 
+ * @public
+ * @param {...} sources the sources in prioritized order
+ */
+export function PropertySources (...sources) {
+    return function (target, name, descriptor) {
+        debug(&quot;@PropertySources - target is descriptor? &quot;, !!descriptor)
+        target = descriptor || target
+
+        if (!target.$$propertySources) //:
+            target.$$propertySources = []
+        
+        for (let source of sources) { // push all sources into property sources list.
+            target.$$propertySources.push(source)
+        }
+
+        return descriptor || target
+    }
+}
+
+
+/**
+ * Fetch a value from one of the @PropertySources declared on the class or method level.
+ *
+ * @public
+ * @param {string} path Path of the property within the source objects (or used)
+ * @param {object|string|function} default value if property is not found within the sources
+ * 
+ */
+export function Property(path, dflt) {
+    return function (target, name, descriptor) {
+
+        /*
+         * Internal implementation to get property from different source types.
+         */
+        function fetchPropertyBySourceType(path, source) {
+            let value
+            debug(`Trying to get property ${path} from ${typeof source} source: `, source)
+            if (typeof source === &quot;object&quot;) {//:
+                value = _.get(source, path)
+            }
+            else if (typeof source === &quot;function&quot;) //:
+                value = source(path)
+
+            return value
+        }
+
+
+        const isFunction = !!descriptor.value
+        const overwrite = isFunction ? &apos;value&apos; : &apos;get&apos;
+        const _fn = descriptor[overwrite]
+        descriptor[overwrite] = function() {
+            let value, source, container
+
+            // checked all preferred sources already, check additional
+            // method/property configured s ources or otherwise class-level
+            let instance = target &amp;&amp; target.constructor || target
+            debug(`@Property sources for ${path}: `, descriptor, instance)
+            for (container of [descriptor,instance]) {
+                if (container &amp;&amp; container.$$propertySources) {
+                    for (source of container.$$propertySources) {
+                        if (source === false) return dflt
+
+                        value = fetchPropertyBySourceType(path, source)
+                        if (value !== undefined) return value
+                    }
+                }
+            }
+
+            debug(`@Property couldn&apos;t find ${path} in sources, using default value: `, dflt)
+
+            return dflt
+        }
+
+        return descriptor
+    }
+}
+
+
+/**
+ * @Self allows to declare the context in which a function should be executed.
+ * It basically invokes fn.apply() with an instance of the indicated class.
+ *
+ * @public
+ * @param {class} clazz the class to be used
+ */
+export function Self(clazz) {
+    return function(target, name, descriptor) {
+        if (!descriptor) throw new Error(`@Self can only be used in class method definitions.`)
+
+        if (typeof clazz == &apos;string&apos;) {
+            let clazzname = clazz
+            clazz = function () {
+                const clazzfn = eval(clazz)
+                return new clazzfn
+            }
+            clazz.$$name = clazzname
+        }
+
+        const fn = descriptor.value || descriptor.get
+
+        descriptor.value = function(...args) {
+            let self = this
+            if (!this || !(this instanceof clazz)) {
+                try {
+                    debug(`@Self is trying to initialize ${clazz.$$name || clazz.constructor.name} to execute ${fn.name}`)
+                    self = clazz
+                }
+                catch (err) {
+                    throw new Error(`Error trying to initialize ${clazz.constructor.name}`, err)
+                }
+            }
+
+            return fn.apply(self, args)
+        }
+
+        return descriptor
+    }
+}</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
