@@ -2,7 +2,7 @@ import jsonschema from 'jsonschema'
 import Debugger from 'debug'
 import _ from 'lodash'
 
-const debug = new Debugger('@expression/core:validations')
+const debug = new Debugger('primavera:validations')
 
 
 export class ValidationErrors extends Error {

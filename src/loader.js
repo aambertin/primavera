@@ -1,4 +1,4 @@
-const debug = require('debug')('@expression/core:loader')
+const debug = require('debug')('primavera:loader')
 
 import prequire from 'parent-require'
 import process from 'process'

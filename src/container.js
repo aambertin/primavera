@@ -1,4 +1,4 @@
-const debug = require('debug')('@expression/core:container')
+const debug = require('debug')('@primavera/core:container')
 
 var container = {};
 var byname = {};
