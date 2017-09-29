@@ -1,5 +1,4 @@
-'use strict'
-const debug = require('debug')('@expression/core:decorators/flow')
+const debug = require('debug')('primavera:flow')
 const _ = require('lodash')
 
 const resolvers = []
@@ -69,22 +68,28 @@ export function Resolve(pattern) {
 
 
 export function ResolveWith(pattern) {
-
     return function(target, name, descriptor) {
         debug(`Registering function ${target.name}->${name} as resolve-requestor for pattern: `, pattern)
         const previous = descriptor.value;
-        descriptor.value = async function() {
-            let response, processor
+        descriptor.value = async function(message) {
+            const usePattern = _.merge({}, pattern)
+            
+            let processor
             debug(`@ResolveWith is being applied to ${previous.name || 'inline function'}`)
-            response = await previous.apply(this, arguments)
-            processor = ResolveWith.resolver(pattern)
-            return await processor(response)
+            message = await previous.apply(this, [message, usePattern])
+            processor = ResolveWith.resolver(usePattern)
+            return await processor(message)
         }
 
         return descriptor
     }
 }
 
+/**
+ * Find a resolver function for a given _pattern_.
+ * @param  {Object} pattern The pattern that drives the flow.
+ * @return {Fuction} resolver function for _pattern_
+ */
 ResolveWith.resolver = function(pattern) {
     return async function(data) {
         debug("Resolving data with resolver for pattern ", pattern, data)
