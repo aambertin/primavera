@@ -110,7 +110,7 @@ import {ValidateSchema} from 'primavera/validations'
 
 class ValidationsExample {
 
-    @ValidateSChema(JSONSCHEMA)
+    @ValidateSchema(JSONSCHEMA)
     validatedValue(value) { 
         debug(':value valid according to provided JSONSCHEMA')
     }
