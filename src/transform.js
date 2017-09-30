@@ -1,9 +1,9 @@
-// const debug = require('debug')('@expression/core:decorators/models')
-import { default as debuglib } from 'debug'
-import _ from 'lodash'
-import { default as jsonschema } from 'jsonschema'
+const debug = require('debug')('primavera:transform')
 
-const debug = debuglib('@expression/core:decorators/transform')
+import jsonschema from 'jsonschema'
+import _ from 'lodash'
+
+
 
 /**
  * Apply transformations on method arguments.
@@ -38,22 +38,19 @@ export function IN() {
  * If the return value of the function is an array, the transform functions
  * will be applied to each element of the array.
  */
-export function OUT() {
-    const transformers = Array.from(arguments)
+export function OUT(...transformers) {
     let attribute
     if (transformers[0] && typeof transformers[0] === 'string') //:
         attribute = trasformers.shift()
 
     return function(target, name, descriptor) {
         if (!descriptor) throw new Error(`@Transform operations can only be performed on method response.`)
-        debug(`Configuring @Transform on ${target.name||''}::${descriptor.name}`)
-
+        
         const fn = descriptor.value
         descriptor.value = async function() {
             const args = Array.from(arguments)
             const data = await fn.apply(this, args)
-            debug("Received data to transform", data)
-            return await transform(transformers, data)
+            return await transform(transformers, data, this)
         }
 
         return descriptor
@@ -123,8 +120,9 @@ async function transform_in(transformers = [], args = []) {
 /**
  * General trasnformation support function (N-1)
  */
-async function transform(transformers = [], data) {
+async function transform(transformers = [], data, target) {
     if (!transformers) return data // return raw data if there are no transformers to be applied.
+    debug("Received data to transform", data, target)
 
     // data explosion for array processing scenarios
     if (Array.isArray(data)) {
@@ -141,8 +139,11 @@ async function transform(transformers = [], data) {
 
     let res = data
     for (let transformer of transformers) {
+        if (!transformer) {
+            console.error('Watch out, one of your Transform.OUT ${target? 'in '+target.name : ''} is undefined.')
+        }
         debug(`Applying transformer ${transformer.name} to data`, data)
-        res = await transformer(data)
+        res = await transformer(data, target)
     }
     debug("Transformed data: ", res)
     return res
