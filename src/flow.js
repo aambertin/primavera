@@ -103,6 +103,12 @@ ResolveWith.resolver = function(pattern) {
         }
         debug("Resolved message context to get resolver ", context, data)
 
-        return await resolve(data, context)
+        try {
+            return await resolve(data, context)
+        }
+        catch (err) {
+            console.error(err)
+            throw err
+        }
     }
 }
