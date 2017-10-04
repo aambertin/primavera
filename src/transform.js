@@ -140,7 +140,7 @@ async function transform(transformers = [], data, target) {
     let res = data
     for (let transformer of transformers) {
         if (!transformer) {
-            console.error('Watch out, one of your Transform.OUT ${target? 'in '+target.name : ''} is undefined.')
+            console.error('Watch out, one of your Transform.OUT ${(target && target.name)} is undefined.')
         }
         debug(`Applying transformer ${transformer.name} to data`, data)
         res = await transformer(data, target)

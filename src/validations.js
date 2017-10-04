@@ -1,8 +1,7 @@
-import jsonschema from 'jsonschema'
-import Debugger from 'debug'
-import _ from 'lodash'
+const debug = require('debug')('primavera:validations')
 
-const debug = new Debugger('primavera:validations')
+import jsonschema from 'jsonschema'
+import _ from 'lodash'
 
 
 export class ValidationErrors extends Error {
@@ -112,8 +111,11 @@ export function ValidateSchema(...schemas) {
             for (let i=0; i < args.length; i++) {
                 const arg = args[i]
                 const schema = schemas[i]
-                
+
+                debug(`Checking schema for arg:${i}`, schema)
+
                 if (schema) {
+                    debug('Validating with schema', arg, schema)
                     const validation = jsonschema.validate(arg, schema) 
                     if (validation.errors) errors = errors.concat(validation.errors)
                 }
