@@ -110,15 +110,19 @@ export function ValidateSchema(...schemas) {
             let errors = []
             for (let i=0; i < args.length; i++) {
                 const arg = args[i]
-                const schema = schemas[i]
+                let schema = schemas[i]
 
-                debug(`Checking schema for arg:${i}`, schema)
+                if (!schema) continue
 
-                if (schema) {
-                    debug('Validating with schema', arg, schema)
-                    const validation = jsonschema.validate(arg, schema) 
-                    if (validation.errors) errors = errors.concat(validation.errors)
+                // check if it's a dynamic schema resolver.
+                if (typeof schema == 'function') {
+                    schema = schema(arg, this)
                 }
+
+                debug('Validating with schema', arg, schema)
+                const validation = jsonschema.validate(arg, schema) 
+                if (validation.errors) errors = errors.concat(validation.errors)
+                
             }
 
             if (errors.length > 0) {
