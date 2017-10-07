@@ -1,6 +1,6 @@
 {
   "name": "primavera",
-  "version": "1.0.3",
+  "version": "1.0.9",
   "description": "all expressive stuff",
   "main": "dist/index.js",
   "scripts": {
@@ -8,6 +8,7 @@
     "build": "babel src --presets babel-preset-es2015-node6,babel-preset-stage-3 --out-dir dist",
     "dist": "npm run prepack; npm run build; cd dist; npm pack",
     "prepublish": "npm run build",
+    "publish": "cd dist; npm publish",
     "test": "mocha --require babel-register"
   },
   "author": "Anibal Ambertin <anibal@synergicsource.com> (http://www.synergicsource.com)",

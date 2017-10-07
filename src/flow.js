@@ -3,12 +3,12 @@ const _ = require('lodash')
 
 const resolvers = []
 
-export function register(pattern, fn) {
+export function register(pattern, fn, target) {
     debug("Registered resolver for ", pattern)
-    resolvers.push({pattern, fn})
+    resolvers.push({pattern, fn, target})
 }
 
-export async function resolve(data, context) {
+export async function resolve(context, data) {
     let candidates = []
 
     function match(value, matcher) {
@@ -33,7 +33,7 @@ export async function resolve(data, context) {
             weight++
         }
         if (weight > 0) {
-            candidates.push({fn: resolver.fn, weight})
+            candidates.push({fn: resolver.fn, target: resolver.target, weight})
         }
     }
 
@@ -54,14 +54,18 @@ export async function resolve(data, context) {
         debug(`Found competition between candidates[0](${candidates[0].weight}) and candidates[1](${candidates[1].weight})`)
     }
 
-    return await candidates[0].fn(data, context)
+    const champion = candidates[0]
+    const instance = champion.target && champion.target.constructor ? new champion.target.constructor : this
+
+    return await champion.fn.apply(instance, [data, context])
 }
 
 
 export function Resolve(pattern) {
     return function (target, name, descriptor) {
+        debug('@resolve registered ', target, descriptor)
         const _target = descriptor.value || target
-        register(pattern, _target)
+        register(pattern, _target, target)
         return _target
     }
 }
@@ -104,7 +108,7 @@ ResolveWith.resolver = function(pattern) {
         debug("Resolved message context to get resolver ", context, data)
 
         try {
-            return await resolve(data, context)
+            return await resolve(context, data)
         }
         catch (err) {
             console.error(err)

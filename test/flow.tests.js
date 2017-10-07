@@ -3,15 +3,22 @@ import { Resolve, ResolveWith } from '../dist/flow'
 import should from 'should'
 
 class ForeignServiceResolver {
+	get instanceAccess() {
+		return true
+	}
+
 	@Resolve({domain:'Test', action:'Do'})
 	async doTest(data) {
-		debug
+		if (!this.instanceAccess)
+			throw new Error(`ResolveWith method doesn't have access to the component instance.`)
+		
 		return data
 	}
 }
 
 
 class ClientTestClass {
+
 	@ResolveWith({domain: 'Test', action:'Do'})
 	simpleResolveWith(message) {
 		return message
