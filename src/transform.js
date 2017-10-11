@@ -15,14 +15,12 @@ export default Transform
 /**
  * Map/transform function arguments before actual function call.
  */
-export function IN() {
-    const transformers = Array.from(arguments)
+export function IN(...trasnformers) {
     return function(target, name, descriptor) {
         if (!descriptor) throw new Error(`@Transform operations can only be performed on method arguments.`)
         
         const fn = descriptor.value
-        descriptor.value = async function() {
-            const args = Array.from(arguments)
+        descriptor.value = async function(...args) {
             debug(`Called @Transform.IN with ${transformers.length} transformers for ${args.length} arguments`)
             const values = await transform_in(transformers, args)
             debug(`@Transform.IN on ${name} returned: `, values)
