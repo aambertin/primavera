@@ -76,6 +76,7 @@ export function ResolveWith(pattern) {
         debug(`Registering function ${target.name}->${name} as resolve-requestor for pattern: `, pattern)
         const previous = descriptor.value;
         descriptor.value = async function(message) {
+            message = JSON.parse(JSON.stringify(message))
             const usePattern = _.merge({}, pattern)
             
             let processor
@@ -99,7 +100,9 @@ ResolveWith.resolver = function(pattern) {
         debug("Resolving data with resolver for pattern ", pattern, data)
         if (typeof data == 'Promise') data = await data
 
-        const context = Object.assign({}, pattern)
+        data = JSON.parse(JSON.stringify(data))
+
+        const context = JSON.parse(JSON.stringify(pattern))
         for (let attribute in context) {
             let value = context[attribute]
             if (typeof value == 'string' && value.startsWith("$data")) //:
