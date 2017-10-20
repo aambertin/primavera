@@ -1,6 +1,6 @@
 {
   "name": "primavera",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Decorators-based quick development framework for Node.js",
   "main": "index.js",
   "author": "Anibal Ambertin <anibal@synergicsource.com> (http://www.synergicsource.com)",
@@ -8,6 +8,24 @@
   "repository": {
     "url": "https://github.com/aambertin/primavera"
   },
+  "keywords": [
+    "express",
+    "expressjs",
+    "generator",
+    "primavera",
+    "spring",
+    "framework",
+    "rails",
+    "django",
+    "koa",
+    "sails",
+    "lambda",
+    "aws",
+    "microservices",
+    "rad",
+    "api gateway",
+    "cloud"
+  ],
   "dependencies": {
     "debug": "^3.0.1",
     "find": "^0.2.7",
