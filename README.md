@@ -6,6 +6,47 @@ An ES6 class-based and decorators-powered fast development framework for node.js
 Primavera provides a set of decorators (powered by babel decorators) that allow you to quickly get a complex project
 up and running by leveraging ES6 classes and a decorator-based configuration and interceptors approach.
 
+## Get started with Yeoman!
+
+First, make sure you have yeoman and the proper generator installed!
+```bash
+npm i -g yeoman
+npm i -g generator-primavera
+```
+
+And now let's create your first primavera project!
+```bash
+mkdir my-project
+cd my-project
+yo primavera:app
+```
+
+Easy, right?! Your app is ready to rock n'roll.
+You can even add HTTPS support to it (self-signed) quite easily, just generate your self-signed certificates like this:
+```bash
+openssl genrsa -out key.pem 2048
+openssl req -new -x509 -key key.pem -out cert.pem -days 3650
+```
+
+Now, when you `npm start` it, HTTPS endpoints will be exposed on port 3443.
+
+
+## Your first steps!
+
+Primavera's yeoman generator comes with a set of subgenerators you can use that will not only generate stuff for you, but guide you through the process of connecting the different parts of it.
+What you should give a try now would be:
+```bash
+yo primavera:endpoint
+yo primavera:service
+yo primavera:component
+yo primavera:middleware
+```
+
+The generated code from these should give you a good idea on how to get started, but in case it doesn't...
+
+
+
+
 ## An example endpoint class
 ```javascript
 import {Route, Controller} from 'primavera/web'
