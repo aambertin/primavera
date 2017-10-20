@@ -1,7 +1,7 @@
 {
   "name": "primavera",
-  "version": "1.0.10",
-  "description": "",
+  "version": "1.0.11",
+  "description": "Decorators-based quick development framework for Node.js",
   "main": "index.js",
   "author": "Anibal Ambertin <anibal@synergicsource.com> (http://www.synergicsource.com)",
   "license": "MIT",

@@ -1,7 +1,7 @@
 {
   "name": "primavera",
-  "version": "1.0.10",
-  "description": "all expressive stuff",
+  "version": "1.0.11",
+  "description": "Decorators-based quick development framework for Node.js",
   "main": "dist/index.js",
   "scripts": {
     "prepack": "rm -Rf dist; mkdir dist; cp config/package.json dist",
