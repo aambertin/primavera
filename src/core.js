@@ -19,8 +19,8 @@ import Container from './container'
  * 
  * @param {string} alias alias given to the component to identify within the in-memory container.
  * @name @Injectable
+ * @function
  * @static
- * @public
  * @example
  * import { Injectable, Inject } from 'primavera/core'
  * 
