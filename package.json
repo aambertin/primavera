@@ -9,7 +9,8 @@
     "dist": "npm run prepack; npm run build; cd dist; npm pack",
     "prepublish": "npm run build",
     "publish": "cd dist; npm publish",
-    "test": "mocha --require babel-register"
+    "test": "mocha --require babel-register",
+    "generate-docs": "node_modules/.bin/jsdoc -c jsdoc.json -d docs src/web.js"
   },
   "author": "Anibal Ambertin <anibal@synergicsource.com> (http://www.synergicsource.com)",
   "license": "MIT",

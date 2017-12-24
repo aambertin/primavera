@@ -34,7 +34,7 @@ const router = new Proxy({}, {
  * @static
  * @param  {router} router router of choice
  * @see loader
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
  * // Initialize components and routes.
  * const router = express.Router()
  * primavera.loader.load(/components\.js$/, __dirname)
@@ -60,7 +60,7 @@ export function start(router) {
  * @function
  * @param {function} ...validationFunctions your validation functions
  * @see Before
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
  * import { Controller, Validate } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -79,7 +79,7 @@ export const Validate = Before
  * @function
  * @param {function} ...projectionFunctions your projection functions
  * @see Before
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
   * import { Controller, Project } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -101,7 +101,7 @@ export const Project = After
  * @function
  * @param {string} attribute attribute name
  * @see Request, Context
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
   * import { Controller, Session } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -126,7 +126,7 @@ export function Session(attribute) {
  * @function
  * @param {string} [attribute] attribute name
  * @see Request, Context
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
   * import { Controller, Request } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -188,7 +188,7 @@ export function Request(attribute) {
  * @function
  * @param {number} status
  * @see HttpError
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
   * import { Controller, HttpStatus, Route} from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -252,7 +252,7 @@ _.merge(HttpStatus, {
  * @function
  * @param {number} status status code
  * @see HttpStatus, Route, Controller, Middleware
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
   * import { Controller, HttpError, Route } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -302,7 +302,7 @@ for (let statusCode in HttpStatus) {
  * @static
  * @param {string|array} routes=[] path or array of paths that will trigger this method.
  * @see Controller, Middleware, HttpStatus, HttpError
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
  * import {GetRequest, Route, Controller, HttpStatus} from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -373,7 +373,7 @@ Object.assign(Route, {USE: AllRequests, GET: GetRequest,POST: PostRequest, PUT: 
  * @static
  * @param {object} [config={prefix:''}] controller configuration
  * @see Route, Middleware, HttpStatus, HttpError
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
  * import {Controller, Route} from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -442,7 +442,7 @@ export function Controller(config) {
  * @function
  * @param {string} [path] path of the requested attribute
  * @see Request, Session, Route, Controller, Middleware
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
  * import { Controller, Context } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -488,7 +488,7 @@ export function Context(path) {
  * @static
  * @param {object} [config={prefix:''}]
  * @see Route, Controller, HttpStatus, HttpError
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example  
  * import {Middleware, Route} from 'primavera/web'
  * @Middleware({prefix: ''})
  * class AuthMiddlware {
