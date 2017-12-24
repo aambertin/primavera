@@ -1,14 +1,20 @@
+/**
+ * Decorators for FLOW: pattern-matching service discovery.
+ * @module flow
+ * @requires lodash
+ */
+
 const debug = require('debug')('primavera:flow')
-const _ = require('lodash')
+import _  from 'lodash'
+
 
 const resolvers = []
-
-export function register(pattern, fn, target) {
+function register(pattern, fn, target) {
     debug("Registered resolver for ", pattern)
     resolvers.push({pattern, fn, target})
 }
 
-export async function resolve(context, data) {
+async function resolve(context, data) {
     let candidates = []
 
     function match(value, matcher) {
@@ -61,6 +67,24 @@ export async function resolve(context, data) {
 }
 
 
+/**
+ * \@Resolve annotated methods act as part of the pattern-matching service resolution framework provided by Primavera.
+ * Requests to _resolve_ a given pattern will be caught on a best-match basis, allowing you to specialize _resolvers_ without
+ * going into an "if this... if that" code hell. Also, it's nice to just shout for stuff.
+ * 
+ * @name @Resolve
+ * @function
+ * @static
+ * @param {object} pattern Pattern of the required resolution
+ * @example
+ * import { Resolve } from 'primavera/flow'
+ * class ServiceGroup {
+ *     @Resolve({domain: 'management/users', action: 'SaveUser'})
+ *     async saveUser(payload, context) {
+ *         // ...
+ *     }
+ * }
+ */
 export function Resolve(pattern) {
     return function (target, name, descriptor) {
         debug('@resolve registered ', target, descriptor)
@@ -70,7 +94,31 @@ export function Resolve(pattern) {
     }
 }
 
-
+/**
+ * Des
+ * @function
+ * @static
+ * @name @ResolveWith
+ * @param {object} pattern the pattern to be used to discover the best possible _resolver_.
+ * @example
+ * import { ResolveWith } from 'primavera/flow'
+ * import { Controller, Route } from 'primavera/web'
+ *
+ * \@Controller({prefix: 'users'})
+ * class UsersController {
+ *
+ *     \@Route.GET(':id')
+ *     async fetchUser(params) {
+ *         this.$doFetchUser(params.id)
+ *     }
+ *
+ *     \@ResolveWith({domain: 'management/users', action: 'FetchUser'})
+ *     async $doFetchUser(_id) {
+ *          return { id: _id }
+ *     }
+ *  
+ * }
+ */
 export function ResolveWith(pattern) {
     return function(target, name, descriptor) {
         debug(`Registering function ${target.name}->${name} as resolve-requestor for pattern: `, pattern)

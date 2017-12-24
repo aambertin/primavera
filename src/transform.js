@@ -1,3 +1,12 @@
+/**
+ * Decorators for general payload / response transformation between services/methods.
+ * @module transform
+ * @requires lodash
+ * @requires jsonschema
+ * @requires debug
+ */
+
+
 const debug = require('debug')('primavera:transform')
 
 import jsonschema from 'jsonschema'
@@ -7,15 +16,27 @@ import _ from 'lodash'
 
 /**
  * Apply transformations on method arguments.
+ * This one is just a default holder for import convenience, you can use
+ * \@Transform.IN and \@Transform.OUT  instead of \@TransformInput and \@TransformOutput .
+ * 
+ * @name @Transform
+ * @function
+ * @static
+ * @see TransformInput, TransformOutput, Aggregate
  */
-export const Transform = { IN, OUT }
+export const Transform = { IN: TransformInput, OUT: TransformOutput }
 export default Transform
 
 
 /**
  * Map/transform function arguments before actual function call.
+ * 
+ * @name @TransformInput
+ * @function
+ * @static
+ * @see TransformOutput, Transform, Aggregate
  */
-export function IN(...trasnformers) {
+export function TransformInput(...transformers) {
     return function(target, name, descriptor) {
         if (!descriptor) throw new Error(`@Transform operations can only be performed on method arguments.`)
         
@@ -35,8 +56,13 @@ export function IN(...trasnformers) {
  * Map/transform a function return value.
  * If the return value of the function is an array, the transform functions
  * will be applied to each element of the array.
+ *
+ * @name @TransformOutput
+ * @function
+ * @static
+ * @see TransformInput, Transform, Aggregate
  */
-export function OUT(...transformers) {
+export function TransformOutput(...transformers) {
     let attribute
     if (transformers[0] && typeof transformers[0] === 'string') //:
         attribute = trasformers.shift()
@@ -60,6 +86,11 @@ export function OUT(...transformers) {
  * Map/transform a function return value.
  * If the return value of the function is an array, the transform functions
  * will be applied to each element of the array.
+ *
+ * @name @Aggregate
+ * @function
+ * @static
+ * @see Transform, TransformInput, TransformOutput
  */
 export function Aggregate() {
     const aggregators = Array.from(arguments)
@@ -95,7 +126,7 @@ export function Aggregate() {
 }
 
 
-/**
+/*
  * Support function for actual IN parameters transformations (N-N)
  */
 async function transform_in(transformers = [], args = []) {
@@ -115,8 +146,8 @@ async function transform_in(transformers = [], args = []) {
 }
 
 
-/**
- * General trasnformation support function (N-1)
+/*
+ * General transformation support function (N-1)
  */
 async function transform(transformers = [], data, target) {
     if (!transformers) return data // return raw data if there are no transformers to be applied.

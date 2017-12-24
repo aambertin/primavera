@@ -1,7 +1,14 @@
+/**
+ * Decorators for basic CI, injection and decoration.
+ * @module core
+ * @requires lodash
+ * @requires json-stable-stringify
+ * @requires jsonschema
+ */
+
 'use strict'
 const debug = require('debug')('primavera:core')
 import _ from 'lodash'
-import {default as jsonschema} from 'jsonschema'
 import stringify from 'json-stable-stringify'
 import Container from './container'
 
@@ -11,13 +18,17 @@ import Container from './container'
  * It can only be used on a class-level.
  * 
  * @param {string} alias alias given to the component to identify within the in-memory container.
+ * @name @Injectable
+ * @static
  * @public
- * 
  * @example
- * @Injectable('services/injectable')
+ * import { Injectable, Inject } from 'primavera/core'
+ * 
+ * \@Injectable('services/injectable')
  * class InjectableComponent { ... }
+ * 
  * class DepentantComponent {
- *     @Inject('services/injectable')
+ *     \@Inject('services/injectable')
  *     get injectable() {}
  * }
  */
@@ -35,32 +46,15 @@ export function Injectable(alias) {
 
 
 /**
- * @see #static-function-Injectable
+ * Alias for \@Injectable
+ * 
+ * @name @Component
+ * @function
+ * @static
  * @public
- * @type {decorator}
- */
-export const Service    = Injectable
-
-/**
- * @see #static-function-Injectable
- * @public
- * @type {decorator}
+ * @see Injectable
  */
 export const Component  = Injectable
-
-/**
- * @see #static-function-Injectable
- * @public
- * @type {decorator}
- */
-export const Module     = Injectable
-
-/**
- * @see #static-function-Injectable
- * @public
- * @type {decorator}
- */
-export const Adapter    = Injectable
 
 
 /**
@@ -69,22 +63,24 @@ export const Adapter    = Injectable
  * or by providing an array as return value which will override the entire _arguments chain_
  * to be passed to the next intercepting function or the target method.
  *
- * @type {decorator}
+ * 
+ * @name @Before
  * @param {...function} fns functions to be executed before the target method
- * @public
+ * @function
+ * @static
  * 
  * @example
- * @Before(() => debug('do nothing'))
+ * \@Before(() => debug('do nothing'))
  * function somefunction() { ... }
  *
  * @example
- * @Before((...args) => { return ['altered']})
+ * \@Before((...args) => { return ['altered']})
  * testfunction(...args) {
  *     // args[0] == 'altered'
  * }
  *
  * @example
- * @Before((...args) => { 
+ * \@Before((...args) => { 
  *     const altered = [...args]
  *     altered[0] = 'altered'
  * })
@@ -114,8 +110,13 @@ export function Before(...fns) {
 }
 
 /**
- * Alias for @Before used for syntactic sugar.
- * @type {decorator}
+ * Alias for \@Before
+ * 
+ * @name @Validate
+ * @function
+ * @static
+ * @public
+ * @see Before
  */
 export const Validate = Before
 
@@ -127,22 +128,23 @@ export const Validate = Before
  * Each function will receive as only parameter the return value of the previous one.
  * If no value is returned, the previous non-undefined return value will be kept.
  *
- * @type {decorator}
+ * @function
+ * @static
+ * @name @After
  * @param {...function} fns functions to be executed before the target method
- * @public
  * 
  * @example
- * @After(() => debug('do nothing'))
+ * \@After(() => debug('do nothing'))
  * function testfunction() { return 'original' }
  * testfunction() == 'original'
  *
  * @example
- * @After((value) => { return 'altered'})
+ * \@After((value) => { return 'altered'})
  * testfunction() { return 'original' }
  * testfunction() == 'altered'
  *
  * @example
- * @After((obj) => { 
+ * \@After((obj) => { 
  *     obj.altered = true
  * })
  * testfunction() { return {altered:false} }
@@ -171,10 +173,11 @@ export function After(...fns) {
 }
 /**
  * Alias for Before used for syntactic sugar.
- * 
+ *
+ * @function
+ * @static
+ * @name @Project
  * @see Before
- * @public
- * @type {decorator}
  */
 export const Project = After
 
@@ -191,10 +194,12 @@ export const Project = After
  *
  * To be used toogether with @Injectable or one of its aliases.
  *
- * @public
+ * @function
+ * @static
+ * @name @SmartPooling
  * 
  * @example
- * @SmartPooling()
+ * \@SmartPooling()
  * class PooledClass {
  *     constructor() {
  *         this.random = Math.random()
@@ -235,8 +240,10 @@ export function SmartPooling() {
 /**
  * Alias of @SmartPooling
  * 
- * @public
- * @type {decorator}
+ * @function
+ * @static
+ * @name @Singleton
+ * @see SmartPooling
  */
 export const Singleton = SmartPooling
 
@@ -245,9 +252,11 @@ export const Singleton = SmartPooling
  * If the dependency can't be found, it will create a SmartProxy
  * to delay instantiation until the dependency is first accessed (lazy initialization).
  *
- * @public
- * @param {string} alias is the alias of the component within the in-memory container
- * @param {[]} args arguments to initialize the instance of the component (if required or desired)
+ * @function
+ * @static
+ * @name @Inject
+ * @param {string|object} [configuration] is the alias of the component within the in-memory container
+ * @param {object} initializationArguments arguments to initialize the instance of the component (if required or desired)
  */
 export function Inject(config, args) {
     if (args && !Array.isArray(args)) args = [args]
@@ -270,29 +279,31 @@ export function Inject(config, args) {
 /**
  * Bind a given object element to the decorated method.
  *
- * @public
+ * @function
+ * @static
+ * @name @Bind
  * @param {...string} fixtures the fixtures to be applied. It can reference attributes or methods on the instance level.
  *
  * @example
- * @Bind('myAttribute')
+ * \@Bind('myAttribute')
  * testfunction (value) {
  *     value == this.myAttribute
  * }
  *
  * @example
- * @Bind('nested.attribute')
+ * \@Bind('nested.attribute')
  * testfunction (value) {
  *     value == this.nested.attribute
  * }
  *
  * @example
- * @Bind('someFunction')
+ * \@Bind('someFunction')
  * testfunction (value) {
  *     value == this.someFunction()
  * }
  *
  * @example
- * @Bind('someFunction().nestedAttribute')
+ * \@Bind('someFunction().nestedAttribute')
  * testfunction (value) {
  *     value == this.someFunction().nestedAttribute
  * }
@@ -348,8 +359,10 @@ export function Bind(...fixtures) {
  * @PropertySources can take any object (and will inspect it) or _resolver function_.
  * It will iterate through such sources until the requested @Property is resolved.
  * 
- * @public
- * @param {...} sources the sources in prioritized order
+ * @function
+ * @static
+ * @name @PropertySources
+ * @param {object|function} sources the sources in prioritized order
  */
 export function PropertySources (...sources) {
     return function (target, name, descriptor) {
@@ -371,7 +384,9 @@ export function PropertySources (...sources) {
 /**
  * Fetch a value from one of the @PropertySources declared on the class or method level.
  *
- * @public
+ * @function
+ * @static
+ * @name @Property
  * @param {string} path Path of the property within the source objects (or used)
  * @param {object|string|function} default value if property is not found within the sources
  * 
@@ -430,7 +445,9 @@ export function Property(path, dflt) {
  * @Self allows to declare the context in which a function should be executed.
  * It basically invokes fn.apply() with an instance of the indicated class.
  *
- * @public
+ * @function
+ * @static
+ * @name @Self
  * @param {class} clazz the class to be used
  */
 export function Self(clazz) {

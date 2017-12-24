@@ -1,10 +1,16 @@
-const debug = require('debug')('primavera:validations')
+/**
+ * Decorators for general validations.
+ * @module validations
+ * @requires lodash
+ * @requires jsonschema
+ * @requires debug
+ */
 
+const debug = require('debug')('primavera:validations')
 import jsonschema from 'jsonschema'
 import _ from 'lodash'
 
-
-export class ValidationErrors extends Error {
+class ValidationErrors extends Error {
     constructor(errors) {
         super()
         this.errors = errors
@@ -12,10 +18,7 @@ export class ValidationErrors extends Error {
     }
 }
 
-/**
- * Explicit object representation of a validation error.
- */
-export class ValidationError extends Error {
+class ValidationError extends Error {
     constructor(message, data) {
         super()
         _.merge(this, data)
@@ -27,7 +30,11 @@ export class ValidationError extends Error {
 /**
  * Adds static and dynamic $validate methods to a given class/object.
  * The $validate methods will take care of validating the object against the provided JSON schema.
- * Scope: class-level
+ *
+ * @name @Schema
+ * @function
+ * @static
+ * @param {object} jsonschema the json schema that should apply to instances of this object.
  */
 export function Schema(jsonSchema, dflt = {throwError: true}) {
     return function(target, name, descriptor) {
@@ -97,7 +104,26 @@ export function Schema(jsonSchema, dflt = {throwError: true}) {
 
 /**
  * Validate arguments of a method against json-schemas before allowing its execution.
- * Scope: method-level
+ * @name @ValidateSchema
+ * @function
+ * @static
+ * @example
+ *
+ * class MyClass {
+ *
+ *     // validate arguments with a json schema...
+ *     \@ValidateSchema(SomeSchemaForArg1, SomeSchemaForArg2)
+ *     async myMethod(arg1, arg2) {
+ *         // ...
+ *     }
+ *
+ *     // or apply multiple schemas to one argument...
+ *     \@ValidateSchema([Arg1Schema1, Arg1Schema2], SomeSchemaForArg2)
+ *     async myOtherMethod(arg1, arg2) {
+ *         // ...
+ *     }
+ *     
+ * }
  */
 export function ValidateSchema(...schemas) {
     return function(target, name, descriptor) {
