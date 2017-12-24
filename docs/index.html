@@ -1,228 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">API Document</title>
-  <link type="text/css" rel="stylesheet" href="css/style.css">
-  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
-  <script src="script/prettify/prettify.js"></script>
-  
-  
-  <script src="script/manual.js"></script>
+    <meta charset="utf-8">
+    <title>Home - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body>
 
-<header>
-  <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
-  <a href="source.html">Source</a>
-  
-  
-  <div class="search-box">
-  <span>
-    <img src="./image/search.png">
-    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
-  </span>
-    <ul class="search-result"></ul>
-  </div>
-</header>
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-<nav class="navigation" data-ice="nav"><div>
-  <ul>
-    
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validations.js~ValidationError.html">ValidationError</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/validations.js~ValidationErrors.html">ValidationErrors</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-After">After</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Before">Before</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Bind">Bind</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Inject">Inject</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Injectable">Injectable</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Property">Property</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-PropertySources">PropertySources</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Self">Self</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-SmartPooling">SmartPooling</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Resolve">Resolve</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ResolveWith">ResolveWith</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-register">register</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-resolve">resolve</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-load">load</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Aggregate">Aggregate</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-IN">IN</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-OUT">OUT</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Schema">Schema</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-ValidateSchema">ValidateSchema</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-RequiresAuth">RequiresAuth</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-RequiresRole">RequiresRole</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Context">Context</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Controller">Controller</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HttpError">HttpError</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-HttpStatus">HttpStatus</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Middleware">Middleware</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Request">Request</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Route">Route</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Session">Session</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-start">start</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Adapter">Adapter</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Component">Component</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Module">Module</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Project">Project</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Service">Service</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Singleton">Singleton</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validate">Validate</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Transform">Transform</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-AllRequests">AllRequests</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DeleteRequest">DeleteRequest</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-GetRequest">GetRequest</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-ListRequest">ListRequest</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-OptionsRequest">OptionsRequest</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PatchRequest">PatchRequest</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PostRequest">PostRequest</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Project">Project</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-PutRequest">PutRequest</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validate">Validate</a></span></span></li>
-</ul>
-</div>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-web.html">web</a><ul class='methods'><li data-type='method'><a href="module-web.html#.@Context">@Context</a></li><li data-type='method'><a href="module-web.html#.@Controller">@Controller</a></li><li data-type='method'><a href="module-web.html#.@HttpError">@HttpError</a></li><li data-type='method'><a href="module-web.html#.@HttpStatus">@HttpStatus</a></li><li data-type='method'><a href="module-web.html#.@Middlware">@Middlware</a></li><li data-type='method'><a href="module-web.html#.@Project">@Project</a></li><li data-type='method'><a href="module-web.html#.@Request">@Request</a></li><li data-type='method'><a href="module-web.html#.@Route">@Route</a></li><li data-type='method'><a href="module-web.html#.@Session">@Session</a></li><li data-type='method'><a href="module-web.html#.@Validate">@Validate</a></li><li data-type='method'><a href="module-web.html#.start">start</a></li></ul></li></ul>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="primavera">Primavera</h1>
-<p>An ES6 class-based and decorators-powered fast development framework for node.js and express.</p>
-<h2 id="decorated-annotated">Decorated / Annotated</h2>
-<p>Primavera provides a set of decorators (powered by babel decorators) that allow you to quickly get a complex project
-up and running by leveraging ES6 classes and a decorator-based configuration and interceptors approach.</p>
-<h2 id="an-example-endpoint-class">An example endpoint class</h2>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import {Route, Controller} from &apos;primavera/web&apos;
-import {ValidateSchema} from &apos;primavera/validations&apos;
+<div id="main">
+    
 
-@Controller({prefix: &apos;links&apos;})
-class LinksServicesEndpoints {
-    @Route.GET()
-    listLinks () { ... }
+    
 
-    @Session(&apos;someSessionAttribute&apos;)
-    get sessionAttribute() {}
 
-    @ValidateSchema({}, CreateLinkSchema)
-    @Route.POST()
-    createLink(params, body) { 
-        this.sessionAttribute // contains session attribute
-    }
-}</code>
-</code></pre>
-<h2 id="an-example-middleware-class">An example middleware class</h2>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import {Route, Controller} from &apos;primavera/web&apos;
-import {ValidateSchema} from &apos;primavera/validations&apos;
-import {RequestAuth} from &apos;primavera/web-security&apos;
 
-@Middleware({prefix: &apos;links&apos;})
-class LinksServicesSecurityMiddleware {
-    @RequestAuth
-    @Route.USE(&apos;*&apos;)
-    checkAuth () { ... }
-}</code>
-</code></pre>
-<h2 id="ci-container">CI container</h2>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import {Inject, Injectable} from &apos;primavera/core&apos;
+    
 
-@Injectable(&apos;services/injectable&apos;)
-class InjectableService {
-    someMethod() { ... }
-}
 
-class DependantService {
-    @Inject(&apos;services/injectable&apos;)
-    get injectable() {}
 
-    doSomething() {
-        injectable.someMethod() // uses injected dependency
-    }
-}</code>
-</code></pre>
-<h2 id="plain-interception-before-after">Plain interception: @Before &amp; @After</h2>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import {Before, After} from &apos;primavera/core&apos;
 
-class InterceptorsTest {
-    @Before((...args) =&gt; debug(...args))
-    withBefore() {
-        /// this is logging before the method hits
-    }
 
-    @Before((...args) =&gt; { return [&apos;altered&apos;] }
-    alteredArguments (value) {
-        /// value will always be &quot;altered&quot;
-    }
 
-    @After((returnValue) =&gt; debug(&apos;returnvalue was&apos;, returnValue))
-    loggingAfter() {
-        return &quot;unaltered&quot; // logging is okay, but doesn&apos;t alter the return value
-    }
 
-    @After((returnValue) =&gt; { return returnValue+1 }))
-    alteredValue() {
-        return 1 // actual return value will be altered by @After, so it will be 2
-    }</code>
-</code></pre>
-<h2 id="transform-input-and-output">Transform input and output</h2>
-<p>It works pretty much like @Before and @After...</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import {Transform, After} from &apos;primavera/transform&apos;
 
-class TransformExample {
 
-    @Transform.OUT((raw) =&gt; { raw.altered = true; return raw; })
-    alteredValue() { return { altered: false } }
+    
 
-    checkValue() {
-        this.alteredValue().altered // true
-    }
-}</code>
-</code></pre>
-<h2 id="validations">Validations</h2>
-<p>It works pretty much like @Before and @After...</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">import {ValidateSchema} from &apos;primavera/validations&apos;
 
-class ValidationsExample {
 
-    @ValidateSChema(JSONSCHEMA)
-    validatedValue(value) { 
-        debug(&apos;:value valid according to provided JSONSCHEMA&apos;)
-    }
-}</code>
-</code></pre>
-<h2 id="decoupling-through-message-pattern-matching">Decoupling through message pattern matching</h2>
-<p>Only in-memory and first-level attribute matching ATM.
-Seneca and AWS Lambda support comming soon.</p>
-<pre><code class="lang-javascript"><code class="source-code prettyprint">class LinkServices {
-    @Resolve({ domain: &apos;links&apos;, action: &apos;create&apos; })
-    function resolverService(...args) {
-        ...
-    }
-}
 
-class LinksCLient {
-    @ResolveWith({domain:&apos;links&apos;, action: &apos;create&apos;})
-    function transparentServiceResolving(serviceParams) { 
-        // you can alter those params here to match the service
-        // your return value will be the service&apos;s input
-        // the service output will be served to the caller
-        // you can transform the output using @Transform.OUT 
-    }
-}</code>
-</code></pre>
-<p>Better documentation an example projects coming soon :)</p>
-</div>
+
+
+
 </div>
 
-<footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Dec 24 2017 14:16:14 GMT+0800 (WITA) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script src="script/search_index.js"></script>
-<script src="script/search.js"></script>
-<script src="script/pretty-print.js"></script>
-<script src="script/inherited-summary.js"></script>
-<script src="script/test-summary.js"></script>
-<script src="script/inner-link.js"></script>
-<script src="script/patch-for-local.js"></script>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
 </body>
 </html>

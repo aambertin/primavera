@@ -1,4 +1,43 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>web.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-web.html">web</a><ul class='methods'><li data-type='method'><a href="module-web.html#.@Context">@Context</a></li><li data-type='method'><a href="module-web.html#.@Controller">@Controller</a></li><li data-type='method'><a href="module-web.html#.@HttpError">@HttpError</a></li><li data-type='method'><a href="module-web.html#.@HttpStatus">@HttpStatus</a></li><li data-type='method'><a href="module-web.html#.@Middlware">@Middlware</a></li><li data-type='method'><a href="module-web.html#.@Project">@Project</a></li><li data-type='method'><a href="module-web.html#.@Request">@Request</a></li><li data-type='method'><a href="module-web.html#.@Route">@Route</a></li><li data-type='method'><a href="module-web.html#.@Session">@Session</a></li><li data-type='method'><a href="module-web.html#.@Validate">@Validate</a></li><li data-type='method'><a href="module-web.html#.start">start</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">web.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * Decorators for HTTP API routing, endpoint and middleware configuration.
  * @module web
  * @requires primavera/core
@@ -34,7 +73,7 @@ const router = new Proxy({}, {
  * @static
  * @param  {router} router router of choice
  * @see loader
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
  * // Initialize components and routes.
  * const router = express.Router()
  * primavera.loader.load(/components\.js$/, __dirname)
@@ -60,7 +99,7 @@ export function start(router) {
  * @function
  * @param {function} ...validationFunctions your validation functions
  * @see Before
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
  * import { Controller, Validate } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -79,7 +118,7 @@ export const Validate = Before
  * @function
  * @param {function} ...projectionFunctions your projection functions
  * @see Before
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
   * import { Controller, Project } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -101,7 +140,7 @@ export const Project = After
  * @function
  * @param {string} attribute attribute name
  * @see Request, Context
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
   * import { Controller, Session } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -111,7 +150,7 @@ export const Project = After
  */
 export function Session(attribute) {
     var path = ['$request.session']
-    if (attribute && attribute.trim()) path.push(attribute)
+    if (attribute &amp;&amp; attribute.trim()) path.push(attribute)
     path = path.join('.')
 
     return Context(path)
@@ -126,7 +165,7 @@ export function Session(attribute) {
  * @function
  * @param {string} [attribute] attribute name
  * @see Request, Context
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
   * import { Controller, Request } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -136,7 +175,7 @@ export function Session(attribute) {
  */
 export function Request(attribute) {
     var path = ['$request']
-    if (attribute && attribute.trim()) path.push(attribute)
+    if (attribute &amp;&amp; attribute.trim()) path.push(attribute)
     path = path.join('.')
 
     return Context(path)
@@ -188,7 +227,7 @@ export function Request(attribute) {
  * @function
  * @param {number} status
  * @see HttpError
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
   * import { Controller, HttpStatus, Route} from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -252,7 +291,7 @@ _.merge(HttpStatus, {
  * @function
  * @param {number} status status code
  * @see HttpStatus, Route, Controller, Middleware
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
   * import { Controller, HttpError, Route } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -302,7 +341,7 @@ for (let statusCode in HttpStatus) {
  * @static
  * @param {string|array} routes=[] path or array of paths that will trigger this method.
  * @see Controller, Middleware, HttpStatus, HttpError
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
  * import {GetRequest, Route, Controller, HttpStatus} from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -329,7 +368,7 @@ export function Route(routes = []) {
 
         for (let route of routes) {
         	const parts = route.match(/[a-zA-Z0-9-_./\*\+:+]+/ig)
-        	if (parts.length < 2) throw new Error(`${route} is not a valid routing expression.`)
+        	if (parts.length &lt; 2) throw new Error(`${route} is not a valid routing expression.`)
 
             const method = parts[0].toLowerCase()
             let path = parts[1] || ''
@@ -373,7 +412,7 @@ Object.assign(Route, {USE: AllRequests, GET: GetRequest,POST: PostRequest, PUT: 
  * @static
  * @param {object} [config={prefix:''}] controller configuration
  * @see Route, Middleware, HttpStatus, HttpError
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
  * import {Controller, Route} from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -383,8 +422,8 @@ Object.assign(Route, {USE: AllRequests, GET: GetRequest,POST: PostRequest, PUT: 
  * }
  */
 export function Controller(config) {
-    var prefix = config && config.prefix || '';
-    if (prefix && prefix.indexOf('/')!=0) prefix = `/${prefix}`
+    var prefix = config &amp;&amp; config.prefix || '';
+    if (prefix &amp;&amp; prefix.indexOf('/')!=0) prefix = `/${prefix}`
 
     return function (target, name, descriptor) {
         if (!target) throw new Error(`@Controller decorator can only be used in a class.`)
@@ -442,7 +481,7 @@ export function Controller(config) {
  * @function
  * @param {string} [path] path of the requested attribute
  * @see Request, Session, Route, Controller, Middleware
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
  * import { Controller, Context } from 'primavera/web'
  * \@Controller()
  * class MyController {
@@ -488,7 +527,7 @@ export function Context(path) {
  * @static
  * @param {object} [config={prefix:''}]
  * @see Route, Controller, HttpStatus, HttpError
- * @example <caption>Replace &lt;at&gt; with @</caption>
+ * @example &lt;caption>Replace &amp;lt;at&amp;gt; with @&lt;/caption>
  * import {Middleware, Route} from 'primavera/web'
  * @Middleware({prefix: ''})
  * class AuthMiddlware {
@@ -500,8 +539,8 @@ export function Context(path) {
  * }
  */
 export function Middleware(config) {
-    var prefix = config && config.prefix || '';
-    if (prefix && prefix.indexOf('/')!=0) prefix = `/${prefix}`
+    var prefix = config &amp;&amp; config.prefix || '';
+    if (prefix &amp;&amp; prefix.indexOf('/')!=0) prefix = `/${prefix}`
 
     return function (target, name, descriptor) {
         if (!target) throw new Error(`@Middleware decorator can only be used in a class.`)
@@ -533,4 +572,22 @@ export function Middleware(config) {
         debug(`@Middleware ${target.name} was setup and routes were added.`)
         return target;
     }
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Dec 24 2017 14:16:14 GMT+0800 (WITA) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

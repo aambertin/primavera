@@ -47,6 +47,9 @@
     "babel-preset-es2016": "^6.22.0",
     "babel-preset-stage-3": "^6.22.0",
     "babel-register": "^6.24.0",
+    "docdash": "^0.4.0",
+    "jsdoc": "^3.5.5",
+    "jsdoc-escape-at": "^1.0.1",
     "mocha": "^3.3.0",
     "should": "^11.2.1"
   },
