@@ -6,6 +6,8 @@ An ES6 class-based and decorators-powered fast development framework for node.js
 Primavera provides a set of decorators (powered by babel decorators) that allow you to quickly get a complex project
 up and running by leveraging ES6 classes and a decorator-based configuration and interceptors approach.
 
+After the quickstart, go and check the [Full documentation](https://aambertin.github.com/primavera)
+
 ## Get started with Yeoman!
 
 First, make sure you have yeoman and the proper generator installed!
