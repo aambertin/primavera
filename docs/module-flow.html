@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>flow - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a><ul class='methods'><li data-type='method'><a href="module-core.html#.@After">@After</a></li><li data-type='method'><a href="module-core.html#.@Before">@Before</a></li><li data-type='method'><a href="module-core.html#.@Bind">@Bind</a></li><li data-type='method'><a href="module-core.html#.@Component">@Component</a></li><li data-type='method'><a href="module-core.html#.@Inject">@Inject</a></li><li data-type='method'><a href="module-core.html#.@Injectable">@Injectable</a></li><li data-type='method'><a href="module-core.html#.@Project">@Project</a></li><li data-type='method'><a href="module-core.html#.@Property">@Property</a></li><li data-type='method'><a href="module-core.html#.@PropertySources">@PropertySources</a></li><li data-type='method'><a href="module-core.html#.@Self">@Self</a></li><li data-type='method'><a href="module-core.html#.@Singleton">@Singleton</a></li><li data-type='method'><a href="module-core.html#.@SmartPooling">@SmartPooling</a></li><li data-type='method'><a href="module-core.html#.@Validate">@Validate</a></li></ul></li><li><a href="module-flow.html">flow</a><ul class='methods'><li data-type='method'><a href="module-flow.html#.@Resolve">@Resolve</a></li><li data-type='method'><a href="module-flow.html#.@ResolveWith">@ResolveWith</a></li></ul></li><li><a href="module-transform.html">transform</a><ul class='methods'><li data-type='method'><a href="module-transform.html#.@Aggregate">@Aggregate</a></li><li data-type='method'><a href="module-transform.html#.@Transform">@Transform</a></li><li data-type='method'><a href="module-transform.html#.@TransformInput">@TransformInput</a></li><li data-type='method'><a href="module-transform.html#.@TransformOutput">@TransformOutput</a></li></ul></li><li><a href="module-validations.html">validations</a><ul class='methods'><li data-type='method'><a href="module-validations.html#.@Schema">@Schema</a></li><li data-type='method'><a href="module-validations.html#.@ValidateSchema">@ValidateSchema</a></li></ul></li><li><a href="module-web.html">web</a><ul class='methods'><li data-type='method'><a href="module-web.html#.@Context">@Context</a></li><li data-type='method'><a href="module-web.html#.@Controller">@Controller</a></li><li data-type='method'><a href="module-web.html#.@HttpError">@HttpError</a></li><li data-type='method'><a href="module-web.html#.@HttpStatus">@HttpStatus</a></li><li data-type='method'><a href="module-web.html#.@Middlware">@Middlware</a></li><li data-type='method'><a href="module-web.html#.@Project">@Project</a></li><li data-type='method'><a href="module-web.html#.@Request">@Request</a></li><li data-type='method'><a href="module-web.html#.@Route">@Route</a></li><li data-type='method'><a href="module-web.html#.@Session">@Session</a></li><li data-type='method'><a href="module-web.html#.@Validate">@Validate</a></li><li data-type='method'><a href="module-web.html#.start">start</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">flow</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><p>Decorators for FLOW: pattern-matching service discovery.</p></div>
+        
+
+        
+            
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="flow.js.html">flow.js</a>, <a href="flow.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:lodash</li>
+        </ul>
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".@Resolve"><span class="type-signature">(static) </span>@Resolve<span class="signature">(pattern)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="flow.js.html">flow.js</a>, <a href="flow.js.html#line70">line 70</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>@Resolve annotated methods act as part of the pattern-matching service resolution framework provided by Primavera.
+Requests to <em>resolve</em> a given pattern will be caught on a best-match basis, allowing you to specialize <em>resolvers</em> without
+going into an &quot;if this... if that&quot; code hell. Also, it's nice to just shout for stuff.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import { Resolve } from 'primavera/flow'
+class ServiceGroup {
+    </code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pattern</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Pattern of the required resolution</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".@ResolveWith"><span class="type-signature">(static) </span>@ResolveWith<span class="signature">(pattern)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="flow.js.html">flow.js</a>, <a href="flow.js.html#line97">line 97</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Des</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>import { ResolveWith } from 'primavera/flow'
+import { Controller, Route } from 'primavera/web'
+
+@Controller({prefix: 'users'})
+class UsersController {
+
+    @Route.GET(':id')
+    async fetchUser(params) {
+        this.$doFetchUser(params.id)
+    }
+
+    @ResolveWith({domain: 'management/users', action: 'FetchUser'})
+    async $doFetchUser(_id) {
+         return { id: _id }
+    }
+ 
+}</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pattern</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the pattern to be used to discover the best possible <em>resolver</em>.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Dec 24 2017 17:06:28 GMT+0800 (WITA) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

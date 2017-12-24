@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>flow.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a><ul class='methods'><li data-type='method'><a href="module-core.html#.@After">@After</a></li><li data-type='method'><a href="module-core.html#.@Before">@Before</a></li><li data-type='method'><a href="module-core.html#.@Bind">@Bind</a></li><li data-type='method'><a href="module-core.html#.@Component">@Component</a></li><li data-type='method'><a href="module-core.html#.@Inject">@Inject</a></li><li data-type='method'><a href="module-core.html#.@Injectable">@Injectable</a></li><li data-type='method'><a href="module-core.html#.@Project">@Project</a></li><li data-type='method'><a href="module-core.html#.@Property">@Property</a></li><li data-type='method'><a href="module-core.html#.@PropertySources">@PropertySources</a></li><li data-type='method'><a href="module-core.html#.@Self">@Self</a></li><li data-type='method'><a href="module-core.html#.@Singleton">@Singleton</a></li><li data-type='method'><a href="module-core.html#.@SmartPooling">@SmartPooling</a></li><li data-type='method'><a href="module-core.html#.@Validate">@Validate</a></li></ul></li><li><a href="module-flow.html">flow</a><ul class='methods'><li data-type='method'><a href="module-flow.html#.@Resolve">@Resolve</a></li><li data-type='method'><a href="module-flow.html#.@ResolveWith">@ResolveWith</a></li></ul></li><li><a href="module-transform.html">transform</a><ul class='methods'><li data-type='method'><a href="module-transform.html#.@Aggregate">@Aggregate</a></li><li data-type='method'><a href="module-transform.html#.@Transform">@Transform</a></li><li data-type='method'><a href="module-transform.html#.@TransformInput">@TransformInput</a></li><li data-type='method'><a href="module-transform.html#.@TransformOutput">@TransformOutput</a></li></ul></li><li><a href="module-validations.html">validations</a><ul class='methods'><li data-type='method'><a href="module-validations.html#.@Schema">@Schema</a></li><li data-type='method'><a href="module-validations.html#.@ValidateSchema">@ValidateSchema</a></li></ul></li><li><a href="module-web.html">web</a><ul class='methods'><li data-type='method'><a href="module-web.html#.@Context">@Context</a></li><li data-type='method'><a href="module-web.html#.@Controller">@Controller</a></li><li data-type='method'><a href="module-web.html#.@HttpError">@HttpError</a></li><li data-type='method'><a href="module-web.html#.@HttpStatus">@HttpStatus</a></li><li data-type='method'><a href="module-web.html#.@Middlware">@Middlware</a></li><li data-type='method'><a href="module-web.html#.@Project">@Project</a></li><li data-type='method'><a href="module-web.html#.@Request">@Request</a></li><li data-type='method'><a href="module-web.html#.@Route">@Route</a></li><li data-type='method'><a href="module-web.html#.@Session">@Session</a></li><li data-type='method'><a href="module-web.html#.@Validate">@Validate</a></li><li data-type='method'><a href="module-web.html#.start">start</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">flow.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Decorators for FLOW: pattern-matching service discovery.
+ * @module flow
+ * @requires lodash
+ */
+
+const debug = require('debug')('primavera:flow')
+import _  from 'lodash'
+
+
+const resolvers = []
+function register(pattern, fn, target) {
+    debug("Registered resolver for ", pattern)
+    resolvers.push({pattern, fn, target})
+}
+
+async function resolve(context, data) {
+    let candidates = []
+
+    function match(value, matcher) {
+        if (typeof matcher == 'function') //:
+            return matcher(value)
+        else if (typeof matcher == 'object' &amp;&amp; matcher.constructor.name == 'RegExp') //:
+            return matcher.test(value)
+        else //:
+            return value == matcher
+    }
+
+    // weight the suitable candidates
+    for (let resolver of resolvers) {
+        let weight = 0
+        for (let attribute in resolver.pattern) {
+            let value = _.get(context, attribute)
+            if ((!(attribute in context)) || !match(value, resolver.pattern[attribute])) {
+                // over-specialized or unmatching
+                weight = 0
+                break
+            }
+            weight++
+        }
+        if (weight > 0) {
+            candidates.push({fn: resolver.fn, target: resolver.target, weight})
+        }
+    }
+
+    // Not found
+    if (candidates.length &lt; 1) {
+        debug("No @Resolve candidates match the message context ", context)
+        throw new Error("No @Resolve candidates match the message context ", context)
+    }
+
+    candidates = candidates.sort((a,b) => b.weight - a.weight)
+
+    // Weight collision
+    if (candidates[1]) {
+        if (candidates[0].weight == candidates[1].weight) {
+            debug("There is a weight collision between resolvers for message context ", context, candidates[0], candidates[1])
+            throw new Error("There is a weight collision between resolvers for message context.")
+        }
+        debug(`Found competition between candidates[0](${candidates[0].weight}) and candidates[1](${candidates[1].weight})`)
+    }
+
+    const champion = candidates[0]
+    const instance = champion.target &amp;&amp; champion.target.constructor ? new champion.target.constructor : this
+
+    return await champion.fn.apply(instance, [data, context])
+}
+
+
+/**
+ * \@Resolve annotated methods act as part of the pattern-matching service resolution framework provided by Primavera.
+ * Requests to _resolve_ a given pattern will be caught on a best-match basis, allowing you to specialize _resolvers_ without
+ * going into an "if this... if that" code hell. Also, it's nice to just shout for stuff.
+ * 
+ * @name @Resolve
+ * @function
+ * @static
+ * @param {object} pattern Pattern of the required resolution
+ * @example
+ * import { Resolve } from 'primavera/flow'
+ * class ServiceGroup {
+ *     @Resolve({domain: 'management/users', action: 'SaveUser'})
+ *     async saveUser(payload, context) {
+ *         // ...
+ *     }
+ * }
+ */
+export function Resolve(pattern) {
+    return function (target, name, descriptor) {
+        debug('@resolve registered ', target, descriptor)
+        const _target = descriptor.value || target
+        register(pattern, _target, target)
+        return _target
+    }
+}
+
+/**
+ * Des
+ * @function
+ * @static
+ * @name @ResolveWith
+ * @param {object} pattern the pattern to be used to discover the best possible _resolver_.
+ * @example
+ * import { ResolveWith } from 'primavera/flow'
+ * import { Controller, Route } from 'primavera/web'
+ *
+ * \@Controller({prefix: 'users'})
+ * class UsersController {
+ *
+ *     \@Route.GET(':id')
+ *     async fetchUser(params) {
+ *         this.$doFetchUser(params.id)
+ *     }
+ *
+ *     \@ResolveWith({domain: 'management/users', action: 'FetchUser'})
+ *     async $doFetchUser(_id) {
+ *          return { id: _id }
+ *     }
+ *  
+ * }
+ */
+export function ResolveWith(pattern) {
+    return function(target, name, descriptor) {
+        debug(`Registering function ${target.name}->${name} as resolve-requestor for pattern: `, pattern)
+        const previous = descriptor.value;
+        descriptor.value = async function(message) {
+            message = JSON.parse(JSON.stringify(message))
+            const usePattern = _.merge({}, pattern)
+            
+            let processor
+            debug(`@ResolveWith is being applied to ${previous.name || 'inline function'}`)
+            message = await previous.apply(this, [message, usePattern])
+            processor = ResolveWith.resolver(usePattern)
+            return await processor(message)
+        }
+
+        return descriptor
+    }
+}
+
+/**
+ * Find a resolver function for a given _pattern_.
+ * @param  {Object} pattern The pattern that drives the flow.
+ * @return {Fuction} resolver function for _pattern_
+ */
+ResolveWith.resolver = function(pattern) {
+    return async function(data) {
+        debug("Resolving data with resolver for pattern ", pattern, data)
+        if (typeof data == 'Promise') data = await data
+
+        data = JSON.parse(JSON.stringify(data))
+
+        const context = JSON.parse(JSON.stringify(pattern))
+        for (let attribute in context) {
+            let value = context[attribute]
+            if (typeof value == 'string' &amp;&amp; value.startsWith("$data")) //:
+                context[attribute] = _.get(data, value.substring(6))
+        }
+        debug("Resolved message context to get resolver ", context, data)
+
+        try {
+            return await resolve(context, data)
+        }
+        catch (err) {
+            console.error(err)
+            throw err
+        }
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Dec 24 2017 17:06:28 GMT+0800 (WITA) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

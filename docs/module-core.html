@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>web - Documentation</title>
+    <title>core - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">web</h1>
+    <h1 class="page-title">core</h1>
     
 
     
@@ -49,7 +49,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Decorators for HTTP API routing, endpoint and middleware configuration.</p></div>
+            <div class="description"><p>Decorators for basic CI, injection and decoration.</p></div>
         
 
         
@@ -63,7 +63,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line1">line 1</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -136,11 +136,11 @@
         <h3 class="subsection-title">Requires</h3>
 
         <ul>
-            <li>module:primavera/core</li>
-        
-            <li>module:debug</li>
-        
             <li>module:lodash</li>
+        
+            <li>module:json-stable-stringify</li>
+        
+            <li>module:jsonschema</li>
         </ul>
     
 
@@ -160,7 +160,7 @@
 
     
 
-    <h4 class="name" id=".@Context"><span class="type-signature">(static) </span>@Context<span class="signature">(path<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".@After"><span class="type-signature">(static) </span>@After<span class="signature">(&hellip;fns)</span><span class="type-signature"></span></h4>
 
     
 
@@ -172,7 +172,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line432">line 432</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line123">line 123</a>
     </li></ul></dd>
     
 
@@ -203,13 +203,6 @@
     
 
     
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>Request, Session, Route, Controller, Middleware</li>
-        </ul>
-    </dd>
-    
 
     
 </dl>
@@ -219,13 +212,11 @@
 
 
 <div class="description">
-    <p>Set a given context attribute as a controller/middleware class attribute.
-It provides internal access to any of the 3 main request components:</p>
-<ul>
-<li>$request</li>
-<li>$response</li>
-<li>$session</li>
-</ul>
+    <p>Apply one or more functions AFTER a method is executed.
+Decorators can transform or choose to return a different return value by just returning something
+or by altering the attributes of a returned object.</p>
+<p>Each function will receive as only parameter the return value of the previous one.
+If no value is returned, the previous non-undefined return value will be kept.</p>
 </div>
 
 
@@ -236,13 +227,187 @@ It provides internal access to any of the 3 main request components:</p>
 
 
 
-    <h5>Example</h5>
+    <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>import { Controller, Context } from 'primavera/web'
-@Controller()
-class MyController {
-    @Context('$request.user')
-    get $user() {}
+    <pre class="prettyprint"><code>@After(() => debug('do nothing'))
+function testfunction() { return 'original' }
+testfunction() == 'original'</code></pre>
+
+    <pre class="prettyprint"><code>@After((value) => { return 'altered'})
+testfunction() { return 'original' }
+testfunction() == 'altered'</code></pre>
+
+    <pre class="prettyprint"><code>@After((obj) => { 
+    obj.altered = true
+})
+testfunction() { return {altered:false} }
+testfunction().altered == true</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fns</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>functions to be executed before the target method</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".@Before"><span class="type-signature">(static) </span>@Before<span class="signature">(&hellip;fns)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line60">line 60</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Apply one or more decorators BEFORE a method is executed.
+Decorators can transform the original arguments accessing the <em>arguments</em> of the function,
+or by providing an array as return value which will override the entire <em>arguments chain</em>
+to be passed to the next intercepting function or the target method.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Examples</h5>
+    
+    <pre class="prettyprint"><code>@Before(() => debug('do nothing'))
+function somefunction() { ... }</code></pre>
+
+    <pre class="prettyprint"><code>@Before((...args) => { return ['altered']})
+testfunction(...args) {
+    // args[0] == 'altered'
+}</code></pre>
+
+    <pre class="prettyprint"><code>@Before((...args) => { 
+    const altered = [...args]
+    altered[0] = 'altered'
+})
+testfunction(...args) {
+    // args[0] == 'altered'
 }</code></pre>
 
 
@@ -275,7 +440,175 @@ class MyController {
 
         <tr>
             
-                <td class="name"><code>path</code></td>
+                <td class="name"><code>fns</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>functions to be executed before the target method</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".@Bind"><span class="type-signature">(static) </span>@Bind<span class="signature">(&hellip;fixtures)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line279">line 279</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Bind a given object element to the decorated method.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Examples</h5>
+    
+    <pre class="prettyprint"><code>@Bind('myAttribute')
+testfunction (value) {
+    value == this.myAttribute
+}</code></pre>
+
+    <pre class="prettyprint"><code>@Bind('nested.attribute')
+testfunction (value) {
+    value == this.nested.attribute
+}</code></pre>
+
+    <pre class="prettyprint"><code>@Bind('someFunction')
+testfunction (value) {
+    value == this.someFunction()
+}</code></pre>
+
+    <pre class="prettyprint"><code>@Bind('someFunction().nestedAttribute')
+testfunction (value) {
+    value == this.someFunction().nestedAttribute
+}</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fixtures</code></td>
             
 
             <td class="type">
@@ -290,18 +623,18 @@ class MyController {
             
                 <td class="attributes">
                 
-                    &lt;optional><br>
-                
 
                 
 
+                
+                    &lt;repeatable><br>
                 
                 </td>
             
 
             
 
-            <td class="description last"><p>path of the requested attribute</p></td>
+            <td class="description last"><p>the fixtures to be applied. It can reference attributes or methods on the instance level.</p></td>
         </tr>
 
     
@@ -328,7 +661,7 @@ class MyController {
 
     
 
-    <h4 class="name" id=".@Controller"><span class="type-signature">(static) </span>@Controller<span class="signature">(config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".@Component"><span class="type-signature">(static) </span>@Component<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
@@ -340,7 +673,7 @@ class MyController {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line366">line 366</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line48">line 48</a>
     </li></ul></dd>
     
 
@@ -374,7 +707,7 @@ class MyController {
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>Route, Middleware, HttpStatus, HttpError</li>
+            <li>Injectable</li>
         </ul>
     </dd>
     
@@ -387,8 +720,7 @@ class MyController {
 
 
 <div class="description">
-    <p>Mark a given class as a controller.
-A controller is a class containing routes, providing encapsulation and a logical way of grouping endpoints.</p>
+    <p>Alias for @Injectable</p>
 </div>
 
 
@@ -399,15 +731,90 @@ A controller is a class containing routes, providing encapsulation and a logical
 
 
 
-    <h5>Example</h5>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
     
-    <pre class="prettyprint"><code>import {Controller, Route} from 'primavera/web'
-@Controller()
-class MyController {
-    @Route('POST accounts')
-    async createAccount(params, payload) {
-    }
-}</code></pre>
+
+    <h4 class="name" id=".@Inject"><span class="type-signature">(static) </span>@Inject<span class="signature">(configuration<span class="signature-attributes">opt</span>, initializationArguments)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line250">line 250</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Inject a contained instance into a given component.
+If the dependency can't be found, it will create a SmartProxy
+to delay instantiation until the dependency is first accessed (lazy initialization).</p>
+</div>
+
+
+
+
+
+
+
 
 
 
@@ -429,8 +836,6 @@ class MyController {
         
 
         
-        <th>Default</th>
-        
 
         <th class="last">Description</th>
     </tr>
@@ -441,12 +846,15 @@ class MyController {
 
         <tr>
             
-                <td class="name"><code>config</code></td>
+                <td class="name"><code>configuration</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type">string</span>
+|
+
 <span class="param-type">object</span>
 
 
@@ -466,14 +874,39 @@ class MyController {
             
 
             
-                <td class="default">
+
+            <td class="description last"><p>is the alias of the component within the in-memory container</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>initializationArguments</code></td>
+            
+
+            <td class="type">
+            
                 
-                    <code>{prefix:''}</code>
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
                 
                 </td>
             
 
-            <td class="description last"><p>controller configuration</p></td>
+            
+
+            <td class="description last"><p>arguments to initialize the instance of the component (if required or desired)</p></td>
         </tr>
 
     
@@ -500,7 +933,7 @@ class MyController {
 
     
 
-    <h4 class="name" id=".@HttpError"><span class="type-signature">(static) </span>@HttpError<span class="signature">(status)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".@Injectable"><span class="type-signature">(static) </span>@Injectable<span class="signature">(alias)</span><span class="type-signature"></span></h4>
 
     
 
@@ -512,7 +945,7 @@ class MyController {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line246">line 246</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -543,13 +976,6 @@ class MyController {
     
 
     
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>HttpStatus, Route, Controller, Middleware</li>
-        </ul>
-    </dd>
-    
 
     
 </dl>
@@ -559,7 +985,8 @@ class MyController {
 
 
 <div class="description">
-    <p>Set the error status in case of a non-web exception (no status attribute).</p>
+    <p>Register a component within the in-memory container for use with @Inject.
+It can only be used on a class-level.</p>
 </div>
 
 
@@ -572,14 +999,14 @@ class MyController {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>import { Controller, HttpError, Route } from 'primavera/web'
-@Controller()
-class MyController {
-    @HttpError(HttpStatus.FORBIDDEN)
-    @Route.GET('account')
-    async account(params) {
-        throw Error('Response Status Code will be set to 403.')
-    }
+    <pre class="prettyprint"><code>import { Injectable, Inject } from 'primavera/core'
+
+@Injectable('services/injectable')
+class InjectableComponent { ... }
+
+class DepentantComponent {
+    @Inject('services/injectable')
+    get injectable() {}
 }</code></pre>
 
 
@@ -610,13 +1037,13 @@ class MyController {
 
         <tr>
             
-                <td class="name"><code>status</code></td>
+                <td class="name"><code>alias</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">string</span>
 
 
             
@@ -626,361 +1053,7 @@ class MyController {
 
             
 
-            <td class="description last"><p>status code</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".@HttpStatus"><span class="type-signature">(static) </span>@HttpStatus<span class="signature">(status)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line146">line 146</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>HttpError</li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <p>Set HTTP status on success.</p>
-<p>Potential applicable values for convenience are contained as attributes of HttpStatus itself:
-OK: 200,
-CREATED: 201,
-ACCEPTED: 202,
-NON_AUTHORITATIVE: 203,
-NO_CONTENT: 204,
-RESET_CONTENT: 205,
-PARTIAL_CONTENT: 206,
-MULTI_STATUS: 207,
-MULTIPLE_CHOICES: 300,
-MOVED_PERMANENTLY: 301,
-FOUND: 302,
-SEE_OTHER: 303,
-NOT_MODIFIED: 304,
-USE_PROXY: 305,
-TEMPORARY_REDIRECT: 307,
-PERMANENT_REDIRECT: 308,
-BAD_REQUEST: 400,
-UNAUTHORIZED: 401,
-PAYMENT_REQUIRED: 402,
-FORBIDDEN: 403,
-NOT_FOUND: 404,
-METHOD_NOT_ALLOWED: 405,
-NOT_ACCCEPTABLE: 406,
-PROXY_AUTH_REQUIRED: 407,
-REQUEST_TIMEOUT: 408,
-CONFLICT: 409,
-GONE: 401,
-PRECONDITION_FAILED: 412,
-EXPECTATION_FAILED: 417,
-SERVER_ERROR: 500,
-NOT_IMPLEMENTED: 501,
-BAD_GATEWAY: 502,
-SERVICE_UNAVAILABLE: 503,
-GATEWAY_TIMEOUT: 504</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>import { Controller, HttpStatus, Route} from 'primavera/web'
-@Controller()
-class MyController {
-    @HttpStatus(HttpStatus.OK)
-    @Route.GET('account')
-    async account(params) {
-    }
-}</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>status</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".@Middlware"><span class="type-signature">(static) </span>@Middlware<span class="signature">(config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line480">line 480</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>Route, Controller, HttpStatus, HttpError</li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <p>Mark a given class as a middleware group.
-A middleware class contains routes, providing encapsulation and a logical way of grouping middlware functions.
-If the flow is to be interrupted, simply throw an error.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>import {Middleware, Route} from 'primavera/web'</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>config</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>{prefix:''}</code>
-                
-                </td>
-            
-
-            <td class="description last"></td>
+            <td class="description last"><p>alias given to the component to identify within the in-memory container.</p></td>
         </tr>
 
     
@@ -1019,7 +1092,7 @@ If the flow is to be interrupted, simply throw an error.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line75">line 75</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line174">line 174</a>
     </li></ul></dd>
     
 
@@ -1065,6 +1138,9 @@ If the flow is to be interrupted, simply throw an error.</p>
 
 
 
+<div class="description">
+    <p>Alias for Before used for syntactic sugar.</p>
+</div>
 
 
 
@@ -1073,15 +1149,89 @@ If the flow is to be interrupted, simply throw an error.</p>
 
 
 
-    <h5>Example</h5>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
     
-    <pre class="prettyprint"><code>import { Controller, Project } from 'primavera/web'
-@Controller()
-class MyController {
-    @Project((raw) => { return raw })
-    async someFunction(val) {
-    }
-}</code></pre>
+
+    <h4 class="name" id=".@Property"><span class="type-signature">(static) </span>@Property<span class="signature">(path, default)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line384">line 384</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Fetch a value from one of the @PropertySources declared on the class or method level.</p>
+</div>
+
+
+
+
+
+
+
 
 
 
@@ -1111,12 +1261,41 @@ class MyController {
 
         <tr>
             
-                <td class="name"><code>...projectionFunctions</code></td>
+                <td class="name"><code>path</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Path of the property within the source objects (or used)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>default</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+|
+
+<span class="param-type">string</span>
+|
+
 <span class="param-type">function</span>
 
 
@@ -1127,7 +1306,7 @@ class MyController {
 
             
 
-            <td class="description last"><p>your projection functions</p></td>
+            <td class="description last"><p>value if property is not found within the sources</p></td>
         </tr>
 
     
@@ -1154,7 +1333,7 @@ class MyController {
 
     
 
-    <h4 class="name" id=".@Request"><span class="type-signature">(static) </span>@Request<span class="signature">(attribute<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".@PropertySources"><span class="type-signature">(static) </span>@PropertySources<span class="signature">(sources)</span><span class="type-signature"></span></h4>
 
     
 
@@ -1166,7 +1345,7 @@ class MyController {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line120">line 120</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line355">line 355</a>
     </li></ul></dd>
     
 
@@ -1197,13 +1376,6 @@ class MyController {
     
 
     
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>Request, Context</li>
-        </ul>
-    </dd>
-    
 
     
 </dl>
@@ -1213,7 +1385,8 @@ class MyController {
 
 
 <div class="description">
-    <p>Obtain a given request attribute through a decorated property getter.</p>
+    <p>Indicates the potential sources of properties/values in priority order.
+To be used together with @Property</p>
 </div>
 
 
@@ -1222,198 +1395,6 @@ class MyController {
 
 
 
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>import { Controller, Request } from 'primavera/web'
-@Controller()
-class MyController {
-    @Request('user')
-    get $user() {}
-}</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>attribute</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>attribute name</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".@Route"><span class="type-signature">(static) </span>@Route<span class="signature">(routes)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line286">line 286</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>Controller, Middleware, HttpStatus, HttpError</li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <p>Register within a given Controller/Method pair.
-Router registration will register the path in the router provided to <em>start</em> and transform
-the payload, query parameters and response accordingly.</p>
-<p>Note that you can use whatever route formats are supported by your actual framework router.
-E.g. (express): GET accounts/:id([0-9]+)</p>
-<p>For syntactical sugar you can use any of the following forms:</p>
-<ul>
-<li>@Route('GET account/:id')</li>
-<li>@Route.GET('account/:id')</li>
-<li>@GetRequest('account/:id')</li>
-</ul>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>import {GetRequest, Route, Controller, HttpStatus} from 'primavera/web'
-@Controller()
-class MyController {
-
-    @Route('POST accounts')
-    async createAccount(params, payload) {
-    }
-    
-    @GetRequest('accounts/:id')
-    async fetchAccount(params, payload) {
-    }
-    
-    @Route.PATCH('accounts/:id')
-    async updateAccount(params, payload) {
-    }
-}</code></pre>
 
 
 
@@ -1433,8 +1414,6 @@ class MyController {
         
 
         
-        <th>Default</th>
-        
 
         <th class="last">Description</th>
     </tr>
@@ -1445,16 +1424,16 @@ class MyController {
 
         <tr>
             
-                <td class="name"><code>routes</code></td>
+                <td class="name"><code>sources</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">object</span>
 |
 
-<span class="param-type">array</span>
+<span class="param-type">function</span>
 
 
             
@@ -1463,14 +1442,8 @@ class MyController {
             
 
             
-                <td class="default">
-                
-                    <code>[</code>
-                
-                </td>
-            
 
-            <td class="description last"><p>path or array of paths that will trigger this method.</p></td>
+            <td class="description last"><p>the sources in prioritized order</p></td>
         </tr>
 
     
@@ -1497,7 +1470,7 @@ class MyController {
 
     
 
-    <h4 class="name" id=".@Session"><span class="type-signature">(static) </span>@Session<span class="signature">(attribute)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".@Self"><span class="type-signature">(static) </span>@Self<span class="signature">(clazz)</span><span class="type-signature"></span></h4>
 
     
 
@@ -1509,7 +1482,136 @@ class MyController {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line95">line 95</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line444">line 444</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>clazz</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">class</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>the class to be used</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".@Singleton"><span class="type-signature">(static) </span>@Singleton<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line240">line 240</a>
     </li></ul></dd>
     
 
@@ -1543,7 +1645,7 @@ class MyController {
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li>Request, Context</li>
+            <li>SmartPooling</li>
         </ul>
     </dd>
     
@@ -1556,7 +1658,96 @@ class MyController {
 
 
 <div class="description">
-    <p>Obtain a given session attribute through a decorated property getter.</p>
+    <p>Alias of @SmartPooling</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".@SmartPooling"><span class="type-signature">(static) </span>@SmartPooling<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line187">line 187</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Smart pooling describes the ability to keep a pool of &quot;Singletons&quot;
+based on their instantiation parameters.</p>
+<p>This helps optimize creation/destruction of objects in the container,
+reducing memory footpring as well as saving resources by reducing
+object creation operations.</p>
+<p>To be used toogether with @Injectable or one of its aliases.</p>
 </div>
 
 
@@ -1569,63 +1760,22 @@ class MyController {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>import { Controller, Session } from 'primavera/web'
-@Controller()
-class MyController {
-    @Session('user')
-    get $user() {}
-}</code></pre>
+    <pre class="prettyprint"><code>@SmartPooling()
+class PooledClass {
+    constructor() {
+        this.random = Math.random()
+    }
+}
+
+...
+let base = new PooledClass({ value: 1 })
+let same = new PooledClass({ value: 1 })
+let different = new PooledClass({ value: 2 })
+
+base.random == same.random
+base.random == different.random </code></pre>
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>attribute</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>attribute name</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -1659,7 +1809,7 @@ class MyController {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line56">line 56</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line112">line 112</a>
     </li></ul></dd>
     
 
@@ -1705,156 +1855,8 @@ class MyController {
 
 
 
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>import { Controller, Validate } from 'primavera/web'
-@Controller()
-class MyController {
-    @Validate((val) => { })
-    async someFunction(val) {
-    }
-}</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>...validationFunctions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>your validation functions</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".start"><span class="type-signature">(static) </span>start<span class="signature">(router)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="web.js.html">web.js</a>, <a href="web.js.html#line27">line 27</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>loader</li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
 <div class="description">
-    <p>Initialize routes specified in @Controller and @Middleware classes
-using the provided <em>router</em>. Use together with <em>loader</em>.</p>
+    <p>Alias for @Before</p>
 </div>
 
 
@@ -1865,67 +1867,6 @@ using the provided <em>router</em>. Use together with <em>loader</em>.</p>
 
 
 
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>// Initialize components and routes.
-const router = express.Router()
-primavera.loader.load(/components\.js$/, __dirname)
-primavera.loader.load(/services\.js$/, __dirname)
-primavera.loader.load(/middleware\.js$/, __dirname)
-primavera.loader.load(/endpoints\.js$/, __dirname)
-primavera.web.start(router)
-app.use(router)</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>router</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">router</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>router of choice</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 

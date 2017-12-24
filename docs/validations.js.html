@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>validations.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a><ul class='methods'><li data-type='method'><a href="module-core.html#.@After">@After</a></li><li data-type='method'><a href="module-core.html#.@Before">@Before</a></li><li data-type='method'><a href="module-core.html#.@Bind">@Bind</a></li><li data-type='method'><a href="module-core.html#.@Component">@Component</a></li><li data-type='method'><a href="module-core.html#.@Inject">@Inject</a></li><li data-type='method'><a href="module-core.html#.@Injectable">@Injectable</a></li><li data-type='method'><a href="module-core.html#.@Project">@Project</a></li><li data-type='method'><a href="module-core.html#.@Property">@Property</a></li><li data-type='method'><a href="module-core.html#.@PropertySources">@PropertySources</a></li><li data-type='method'><a href="module-core.html#.@Self">@Self</a></li><li data-type='method'><a href="module-core.html#.@Singleton">@Singleton</a></li><li data-type='method'><a href="module-core.html#.@SmartPooling">@SmartPooling</a></li><li data-type='method'><a href="module-core.html#.@Validate">@Validate</a></li></ul></li><li><a href="module-flow.html">flow</a><ul class='methods'><li data-type='method'><a href="module-flow.html#.@Resolve">@Resolve</a></li><li data-type='method'><a href="module-flow.html#.@ResolveWith">@ResolveWith</a></li></ul></li><li><a href="module-transform.html">transform</a><ul class='methods'><li data-type='method'><a href="module-transform.html#.@Aggregate">@Aggregate</a></li><li data-type='method'><a href="module-transform.html#.@Transform">@Transform</a></li><li data-type='method'><a href="module-transform.html#.@TransformInput">@TransformInput</a></li><li data-type='method'><a href="module-transform.html#.@TransformOutput">@TransformOutput</a></li></ul></li><li><a href="module-validations.html">validations</a><ul class='methods'><li data-type='method'><a href="module-validations.html#.@Schema">@Schema</a></li><li data-type='method'><a href="module-validations.html#.@ValidateSchema">@ValidateSchema</a></li></ul></li><li><a href="module-web.html">web</a><ul class='methods'><li data-type='method'><a href="module-web.html#.@Context">@Context</a></li><li data-type='method'><a href="module-web.html#.@Controller">@Controller</a></li><li data-type='method'><a href="module-web.html#.@HttpError">@HttpError</a></li><li data-type='method'><a href="module-web.html#.@HttpStatus">@HttpStatus</a></li><li data-type='method'><a href="module-web.html#.@Middlware">@Middlware</a></li><li data-type='method'><a href="module-web.html#.@Project">@Project</a></li><li data-type='method'><a href="module-web.html#.@Request">@Request</a></li><li data-type='method'><a href="module-web.html#.@Route">@Route</a></li><li data-type='method'><a href="module-web.html#.@Session">@Session</a></li><li data-type='method'><a href="module-web.html#.@Validate">@Validate</a></li><li data-type='method'><a href="module-web.html#.start">start</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">validations.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Decorators for general validations.
+ * @module validations
+ * @requires lodash
+ * @requires jsonschema
+ * @requires debug
+ */
+
+const debug = require('debug')('primavera:validations')
+import jsonschema from 'jsonschema'
+import _ from 'lodash'
+
+class ValidationErrors extends Error {
+    constructor(errors) {
+        super()
+        this.errors = errors
+        this.status = 400
+    }
+}
+
+class ValidationError extends Error {
+    constructor(message, data) {
+        super()
+        _.merge(this, data)
+        this.status = 400 // bad format
+    }
+}
+
+
+/**
+ * Adds static and dynamic $validate methods to a given class/object.
+ * The $validate methods will take care of validating the object against the provided JSON schema.
+ *
+ * @name @Schema
+ * @function
+ * @static
+ * @param {object} jsonschema the json schema that should apply to instances of this object.
+ */
+export function Schema(jsonSchema, dflt = {throwError: true}) {
+    return function(target, name, descriptor) {
+        if (!target || descriptor) throw new Error("@Schema decorator can only be used in a class.")
+
+        function validate(src, options) {
+            options = _.merge({},dflt,options)
+            debug(`Validating JSON Schema on ${target.name}: `,jsonSchema, src)
+
+            // TODO: Fix this validation mechanism, it's too expensive.
+            const obj = {}
+            for (let prop of Object.keys(src)) {//; 
+                debug(`Copying property ${prop} in ${target.name} to clear object`)
+                obj[prop] = src[prop]
+            }
+
+            const validation = jsonschema.validate(obj, jsonSchema)
+            if (validation.errors &amp;&amp; validation.errors.length > 0) {
+                debug(`Validation errors found in ${target.name}: `, validation.errors)
+                if (options.throwError) {
+                    const error = new ValidationError
+                    error.errors = validation.errors
+                    throw error
+                }
+                else {
+                    return validation.errors
+                }
+            }
+
+            return []
+        }
+        target.prototype.$validate = function(obj, options = dflt) {
+            return validate(obj || this, options)
+        }
+        target.$validate = validate
+
+
+        target.prototype.$validateAll = function(arr, options) {
+            if (!arr) return true
+            options = _.merge({},dflt,options)
+
+            let errors = []
+            for (let i=0; i &lt; arr.length; i++) {
+                const instanceErrors = target.$validate(arr[i], {throwError: false})
+                if (instanceErrors &amp;&amp; instanceErrors.length) {
+                    errors[i] = instanceErrors
+                }
+            }
+            if (errors.length > 1) {
+                if (options.throwError) {
+                    const error = new ValidationErrors
+                    error.errors = errors
+                    throw error
+                }
+                else {
+                    return errors
+                }
+            }
+
+            return []
+        }
+
+
+        return target
+    }
+}
+
+/**
+ * Validate arguments of a method against json-schemas before allowing its execution.
+ * @name @ValidateSchema
+ * @function
+ * @static
+ * @example
+ *
+ * class MyClass {
+ *
+ *     // validate arguments with a json schema...
+ *     \@ValidateSchema(SomeSchemaForArg1, SomeSchemaForArg2)
+ *     async myMethod(arg1, arg2) {
+ *         // ...
+ *     }
+ *
+ *     // or apply multiple schemas to one argument...
+ *     \@ValidateSchema([Arg1Schema1, Arg1Schema2], SomeSchemaForArg2)
+ *     async myOtherMethod(arg1, arg2) {
+ *         // ...
+ *     }
+ *     
+ * }
+ */
+export function ValidateSchema(...schemas) {
+    return function(target, name, descriptor) {
+        if (!descriptor) return Schema(target, name, descriptor)
+
+        const fn = descriptor.value || descriptor.set
+        const attr = (descriptor.value) ? 'value' : 'set'
+
+        descriptor[attr] = function(...args) {
+            let errors = []
+            for (let i=0; i &lt; args.length; i++) {
+                const arg = args[i]
+                let schema = schemas[i]
+
+                if (!schema) continue
+
+                // check if it's a dynamic schema resolver.
+                if (typeof schema == 'function') {
+                    schema = schema(arg, this)
+                }
+
+                debug('Validating with schema', arg, schema)
+                const validation = jsonschema.validate(arg, schema) 
+                if (validation.errors) errors = errors.concat(validation.errors)
+                
+            }
+
+            if (errors.length > 0) {
+                const error = new ValidationError
+                error.errors = errors
+                throw error
+            }
+
+            return fn.apply(this, args)
+        }
+
+        return descriptor
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Dec 24 2017 17:06:28 GMT+0800 (WITA) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

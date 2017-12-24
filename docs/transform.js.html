@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>transform.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-core.html">core</a><ul class='methods'><li data-type='method'><a href="module-core.html#.@After">@After</a></li><li data-type='method'><a href="module-core.html#.@Before">@Before</a></li><li data-type='method'><a href="module-core.html#.@Bind">@Bind</a></li><li data-type='method'><a href="module-core.html#.@Component">@Component</a></li><li data-type='method'><a href="module-core.html#.@Inject">@Inject</a></li><li data-type='method'><a href="module-core.html#.@Injectable">@Injectable</a></li><li data-type='method'><a href="module-core.html#.@Project">@Project</a></li><li data-type='method'><a href="module-core.html#.@Property">@Property</a></li><li data-type='method'><a href="module-core.html#.@PropertySources">@PropertySources</a></li><li data-type='method'><a href="module-core.html#.@Self">@Self</a></li><li data-type='method'><a href="module-core.html#.@Singleton">@Singleton</a></li><li data-type='method'><a href="module-core.html#.@SmartPooling">@SmartPooling</a></li><li data-type='method'><a href="module-core.html#.@Validate">@Validate</a></li></ul></li><li><a href="module-flow.html">flow</a><ul class='methods'><li data-type='method'><a href="module-flow.html#.@Resolve">@Resolve</a></li><li data-type='method'><a href="module-flow.html#.@ResolveWith">@ResolveWith</a></li></ul></li><li><a href="module-transform.html">transform</a><ul class='methods'><li data-type='method'><a href="module-transform.html#.@Aggregate">@Aggregate</a></li><li data-type='method'><a href="module-transform.html#.@Transform">@Transform</a></li><li data-type='method'><a href="module-transform.html#.@TransformInput">@TransformInput</a></li><li data-type='method'><a href="module-transform.html#.@TransformOutput">@TransformOutput</a></li></ul></li><li><a href="module-validations.html">validations</a><ul class='methods'><li data-type='method'><a href="module-validations.html#.@Schema">@Schema</a></li><li data-type='method'><a href="module-validations.html#.@ValidateSchema">@ValidateSchema</a></li></ul></li><li><a href="module-web.html">web</a><ul class='methods'><li data-type='method'><a href="module-web.html#.@Context">@Context</a></li><li data-type='method'><a href="module-web.html#.@Controller">@Controller</a></li><li data-type='method'><a href="module-web.html#.@HttpError">@HttpError</a></li><li data-type='method'><a href="module-web.html#.@HttpStatus">@HttpStatus</a></li><li data-type='method'><a href="module-web.html#.@Middlware">@Middlware</a></li><li data-type='method'><a href="module-web.html#.@Project">@Project</a></li><li data-type='method'><a href="module-web.html#.@Request">@Request</a></li><li data-type='method'><a href="module-web.html#.@Route">@Route</a></li><li data-type='method'><a href="module-web.html#.@Session">@Session</a></li><li data-type='method'><a href="module-web.html#.@Validate">@Validate</a></li><li data-type='method'><a href="module-web.html#.start">start</a></li></ul></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">transform.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Decorators for general payload / response transformation between services/methods.
+ * @module transform
+ * @requires lodash
+ * @requires jsonschema
+ * @requires debug
+ */
+
+
+const debug = require('debug')('primavera:transform')
+
+import jsonschema from 'jsonschema'
+import _ from 'lodash'
+
+
+
+/**
+ * Apply transformations on method arguments.
+ * This one is just a default holder for import convenience, you can use
+ * \@Transform.IN and \@Transform.OUT  instead of \@TransformInput and \@TransformOutput .
+ * 
+ * @name @Transform
+ * @function
+ * @static
+ * @see TransformInput, TransformOutput, Aggregate
+ */
+export const Transform = { IN: TransformInput, OUT: TransformOutput }
+export default Transform
+
+
+/**
+ * Map/transform function arguments before actual function call.
+ * 
+ * @name @TransformInput
+ * @function
+ * @static
+ * @see TransformOutput, Transform, Aggregate
+ */
+export function TransformInput(...transformers) {
+    return function(target, name, descriptor) {
+        if (!descriptor) throw new Error(`@Transform operations can only be performed on method arguments.`)
+        
+        const fn = descriptor.value
+        descriptor.value = async function(...args) {
+            debug(`Called @Transform.IN with ${transformers.length} transformers for ${args.length} arguments`)
+            const values = await transform_in(transformers, args)
+            debug(`@Transform.IN on ${name} returned: `, values)
+            return await fn.apply(this, values)
+        }
+
+        return descriptor
+    }
+}
+
+/**
+ * Map/transform a function return value.
+ * If the return value of the function is an array, the transform functions
+ * will be applied to each element of the array.
+ *
+ * @name @TransformOutput
+ * @function
+ * @static
+ * @see TransformInput, Transform, Aggregate
+ */
+export function TransformOutput(...transformers) {
+    let attribute
+    if (transformers[0] &amp;&amp; typeof transformers[0] === 'string') //:
+        attribute = trasformers.shift()
+
+    return function(target, name, descriptor) {
+        if (!descriptor) throw new Error(`@Transform operations can only be performed on method response.`)
+        
+        const fn = descriptor.value
+        descriptor.value = async function() {
+            const args = Array.from(arguments)
+            const data = await fn.apply(this, args)
+            return await transform(transformers, data, this)
+        }
+
+        return descriptor
+    }
+}
+
+
+/**
+ * Map/transform a function return value.
+ * If the return value of the function is an array, the transform functions
+ * will be applied to each element of the array.
+ *
+ * @name @Aggregate
+ * @function
+ * @static
+ * @see Transform, TransformInput, TransformOutput
+ */
+export function Aggregate() {
+    const aggregators = Array.from(arguments)
+    let attribute
+    if (aggregators[0] &amp;&amp; typeof aggregators[0] === 'string') //:
+        attribute = aggregators.shift()
+
+    return function(target, name, descriptor) {
+        if (!descriptor) throw new Error(`@Aggregate operations can only be performed on method resposne.`)
+        debug(`Configuring @Aggregate on ${target.name||''}::${descriptor.name}`)
+
+        const fn = descriptor.value
+        descriptor.value = async function aggregate() {
+            const ops = []
+            const args = Array.from(arguments)
+            const data = await fn.apply(this, args)
+
+            for (let aggregator of aggregators) {
+                debug(`@Aggregate is running aggregator: ${aggregator.name}`)
+                ops.push(aggregator((attribute &amp;&amp; _.get(data, attribute) || data)))
+            }
+
+            for (let op of ops) {
+                if (attribute) _.merge(_.get(data, attribute), await op)
+                else _.merge(data, await op)
+            }
+            
+            return data
+        }
+
+        return descriptor
+    }
+}
+
+
+/*
+ * Support function for actual IN parameters transformations (N-N)
+ */
+async function transform_in(transformers = [], args = []) {
+    // array explosion
+    if (!Array.isArray(args)) throw new Error(`Argument list in @Transform.IN must be an array. Got: ${typeof args}`)
+
+    const res = []
+    for (let arg of args) {
+        const transformer = transformers.shift()
+        let val
+        if (transformer) val = transform(transformer, arg)
+        else val = arg
+
+        res.push(val)
+    }
+    return await res
+}
+
+
+/*
+ * General transformation support function (N-1)
+ */
+async function transform(transformers = [], data, target) {
+    if (!transformers) return data // return raw data if there are no transformers to be applied.
+    debug("Received data to transform", data, target)
+
+    // data explosion for array processing scenarios
+    if (Array.isArray(data)) {
+        const res_arr = []
+        for (let record of data) {
+            res_arr.push(transform(transformers, record))
+        }
+
+        return await res_arr // await for all data record to be transformed
+    }
+
+    // transform logic
+    if (!Array.isArray(transformers)) transformers = [transformers]
+
+    let res = data
+    for (let transformer of transformers) {
+        if (!transformer) {
+            console.error('Watch out, one of your Transform.OUT ${(target &amp;&amp; target.name)} is undefined.')
+        }
+        debug(`Applying transformer ${transformer.name} to data`, data)
+        res = await transformer(data, target)
+    }
+    debug("Transformed data: ", res)
+    return res
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Dec 24 2017 17:06:28 GMT+0800 (WITA) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
