@@ -45,6 +45,133 @@
     
 
 
+    <section class="readme">
+        <article><h1>Primavera</h1><p>An ES6 class-based and decorators-powered fast development framework for node.js and express.</p>
+<h2>Decorated / Annotated</h2><p>Primavera provides a set of decorators (powered by babel decorators) that allow you to quickly get a complex project
+up and running by leveraging ES6 classes and a decorator-based configuration and interceptors approach.</p>
+<p>After the quickstart, go and check the <a href="https://aambertin.github.com/primavera">Full documentation</a></p>
+<h2>Get started with Yeoman!</h2><p>First, make sure you have yeoman and the proper generator installed!</p>
+<pre class="prettyprint source lang-bash"><code>npm i -g yeoman
+npm i -g generator-primavera</code></pre><p>And now let's create your first primavera project!</p>
+<pre class="prettyprint source lang-bash"><code>mkdir my-project
+cd my-project
+yo primavera:app</code></pre><p>Easy, right?! Your app is ready to rock n'roll.
+You can add HTTPS support to it (self-signed) quite easily, just generate your self-signed certificates like this:</p>
+<pre class="prettyprint source lang-bash"><code>openssl genrsa -out key.pem 2048
+openssl req -new -x509 -key key.pem -out cert.pem -days 3650</code></pre><p>Now, when you <code>npm start</code> it, HTTPS endpoints will be exposed on port 3443.</p>
+<h2>Your first steps!</h2><p>Primavera's yeoman generator comes with a set of subgenerators you can use that will not only generate stuff for you, but guide you through the process of connecting the different parts of it.
+What you should give a try now would be:</p>
+<pre class="prettyprint source lang-bash"><code>yo primavera:endpoint
+yo primavera:service
+yo primavera:component
+yo primavera:middleware</code></pre><p>The generated code from these should give you a good idea on how to get started, but in case it doesn't...</p>
+<h2>An example endpoint class</h2><pre class="prettyprint source lang-javascript"><code>import {Route, Controller} from 'primavera/web'
+import {ValidateSchema} from 'primavera/validations'
+
+@Controller({prefix: 'links'})
+class LinksServicesEndpoints {
+    @Route.GET()
+    listLinks () { ... }
+
+    @Session('someSessionAttribute')
+    get sessionAttribute() {}
+
+    @ValidateSchema({}, CreateLinkSchema)
+    @Route.POST()
+    createLink(params, body) { 
+        this.sessionAttribute // contains session attribute
+    }
+}</code></pre><h2>An example middleware class</h2><pre class="prettyprint source lang-javascript"><code>import {Route, Controller} from 'primavera/web'
+import {ValidateSchema} from 'primavera/validations'
+import {RequestAuth} from 'primavera/web-security'
+
+@Middleware({prefix: 'links'})
+class LinksServicesSecurityMiddleware {
+    @RequestAuth
+    @Route.USE('*')
+    checkAuth () { ... }
+}</code></pre><h2>CI container</h2><pre class="prettyprint source lang-javascript"><code>import {Inject, Injectable} from 'primavera/core'
+
+@Injectable('services/injectable')
+class InjectableService {
+    someMethod() { ... }
+}
+
+class DependantService {
+    @Inject('services/injectable')
+    get injectable() {}
+
+    doSomething() {
+        injectable.someMethod() // uses injected dependency
+    }
+}</code></pre><h2>Plain interception: @Before &amp; @After</h2><pre class="prettyprint source lang-javascript"><code>import {Before, After} from 'primavera/core'
+
+class InterceptorsTest {
+    @Before((...args) => debug(...args))
+    withBefore() {
+        /// this is logging before the method hits
+    }
+
+    @Before((...args) => { return ['altered'] }
+    alteredArguments (value) {
+        /// value will always be &quot;altered&quot;
+    }
+
+    @After((returnValue) => debug('returnvalue was', returnValue))
+    loggingAfter() {
+        return &quot;unaltered&quot; // logging is okay, but doesn't alter the return value
+    }
+
+    @After((returnValue) => { return returnValue+1 }))
+    alteredValue() {
+        return 1 // actual return value will be altered by @After, so it will be 2
+    }</code></pre><h2>Transform input and output</h2><p>It works pretty much like @Before and @After...</p>
+<pre class="prettyprint source lang-javascript"><code>import {Transform, After} from 'primavera/transform'
+
+class TransformExample {
+
+    @Transform.OUT((raw) => { raw.altered = true; return raw; })
+    alteredValue() { return { altered: false } }
+
+    checkValue() {
+        this.alteredValue().altered // true
+    }
+}</code></pre><h2>Validations</h2><p>It works pretty much like @Before and @After...</p>
+<pre class="prettyprint source lang-javascript"><code>import {ValidateSchema} from 'primavera/validations'
+
+class ValidationsExample {
+
+    @ValidateSchema(JSONSCHEMA)
+    validatedValue(value) { 
+        debug(':value valid according to provided JSONSCHEMA')
+    }
+}</code></pre><h2>Decoupling through message pattern matching</h2><p>Only in-memory and first-level attribute matching ATM.
+Seneca and AWS Lambda support comming soon.</p>
+<pre class="prettyprint source lang-javascript"><code>class LinkServices {
+    @Resolve({ domain: 'links', action: 'create' })
+    function resolverService(...args) {
+        ...
+    }
+}
+
+class LinksCLient {
+    @ResolveWith({domain:'links', action: 'create'})
+    function transparentServiceResolving(serviceParams) { 
+        // you can alter those params here to match the service
+        // your return value will be the service's input
+        // the service output will be served to the caller
+        // you can transform the output using @Transform.OUT 
+    }
+}</code></pre><h2>Power-up your IDE</h2><p>There's also some tooling available for Visual Studio Code.</p>
+<p><code>&lt;Ctrl+Shift+P&gt; -&gt; Install extensions</code></p>
+<ul>
+<li><code>aambertin.primavera</code></li>
+</ul>
+<h2>Want some more?</h2><p><a href="https://aambertin.github.com/primavera">Full documentation</a> <br/>
+<a href="https://github.com/aambertin">Sample Project</a> <br/>
+<a href="https://github.com/aambertin/primavera">Github Repo</a></p></article>
+    </section>
+
 
 
 
@@ -55,7 +182,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Dec 24 2017 17:06:28 GMT+0800 (WITA) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Dec 27 2017 12:17:33 GMT+0800 (WITA) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
