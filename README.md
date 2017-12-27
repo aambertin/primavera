@@ -24,7 +24,7 @@ yo primavera:app
 ```
 
 Easy, right?! Your app is ready to rock n'roll.
-You can even add HTTPS support to it (self-signed) quite easily, just generate your self-signed certificates like this:
+You can add HTTPS support to it (self-signed) quite easily, just generate your self-signed certificates like this:
 ```bash
 openssl genrsa -out key.pem 2048
 openssl req -new -x509 -key key.pem -out cert.pem -days 3650
@@ -182,5 +182,13 @@ class LinksCLient {
 }
 ```
 
+## Power-up your IDE
+There's also some tooling available for Visual Studio Code.
 
-Better documentation an example projects coming soon :)
+`<Ctrl+Shift+P> -> Install extensions`
+ * `aambertin.primavera`
+
+## Want some more?
+[Full documentation](https://aambertin.github.com/primavera) <br/>
+[Sample Project](https://github.com/aambertin) <br/>
+[Github Repo](https://github.com/aambertin/primavera)
