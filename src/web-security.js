@@ -4,7 +4,6 @@
  * @requires primavera/web
  * @requires debug
  * @requires lodash
-
  */
 
 const debug = require('debug')('primavera:web-security')

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>web-security.js - Documentation</title>
+    <title>loader.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">web-security.js</h1>
+    <h1 class="page-title">loader.js</h1>
     
 
     
@@ -39,159 +39,57 @@
         <article>
             <pre class="prettyprint source linenums"><code>/**
  * Decorators for API Endpoint and Middleware Auth functions
- * @module web-security
- * @requires primavera/web
- * @requires debug
- * @requires lodash
+ * @module loader
+ * @requires parent-require
+ * @requires find
  */
 
-const debug = require('debug')('primavera:web-security')
 
-import _ from 'lodash'
-import { HttpError } from './web'
+const debug = require('debug')('primavera:loader')
+
+import prequire from 'parent-require'
+import process from 'process'
+import find from 'find'
+
+
+export default load
 
 /**
- * Check if a given user possesses one of N authorized roles to execute this function.
+ * asfdsafd
  * 
- *
- * @category web-security
- * @name @RequiresRole
+ * @category loader
+ * @name load
  * @function
  * @static
- * @param  {...string} roles list of authorized roles.
- * @param {function} [roleFetcher] function used to fetch roles from the authentication context.
- * @param {function} [userFetcher] function used to fetch a user from the authentication context.
- * @see RequiresAuth
- * @example &lt;caption>Must be ONE OF the following&lt;/caption>
- * import { RequiresRole } from 'primavera/web-security'
- * import { Controller, Route } from 'primavera/web'
- * \@Controller()
- * class MySecureController {
+ * @param  {string[]|RegExp[]} patterns list of path patterns to load components from.
+ * @param {string} [__basedir] defaults to process.cwd()
+ * @param {function} [filterFn] additional filtering function
+ * @example
+ * import loader from 'primavera/loader'
  * 
- *     \@RequiresRole('admin', 'manager')
- *     \@Route.GET('users/list')
- *     async listUsers() {
- *         // ...
- *     }
- * 
- * }
- * 
- * @example &lt;caption>Must be ALL OF the following&lt;/caption>
- * import { RequiresRole } from 'primavera/web-security'
- * import { Controller, Route } from 'primavera/web'
- * \@Controller()
- * class MySecureController {
- * 
- *     \@RequiresRole('admin')
- *     \@RequiesRole('manager')
- *     \@Route.GET('users/list')
- *     async listUsers() {
- *         // ...
- *     }
- * 
- * }
- * 
+ * loader.load(/components\.js$/, __dirname)
+ * loader.load(/services\.js$/, __dirname)
+ * loader.load(/middleware\.js$/, __dirname)
+ * loader.load(/endpoints\.js$/, __dirname)
  */
-export function RequiresRole(roles, roleFetcher, userFetcher) {
-    return function(target, name, descriptor) {
-        if (!descriptor) throw new Error('@RequiresAuth can only be used on method-level.')
-        roleFetcher = roleFetcher || 'roles'
-        userFetcher = userFetcher || 'user'
+export function load(patterns, __basedir = process.cwd(), filterfn) {
+    if (!patterns) return
 
-        const user = fetchUserFromContext(userFetcher)
-        const userRoles = (typeof roleFetcher == 'function') ? roleFetcher.apply(this, [user]) : _.get(user, roleFetcher)
+    if (Array.isArray(patterns)) {
+        if (patterns.length &lt; 1)  return
 
-        for (let allowed of roles)
-            if (userRoles.find(allowed)) //:
-                return;
+        for (let pattern of patterns) //:
+            load(pattern, __basedir, filterfn)
 
-        throw HttpError.forbidden('Authenticated user does not have any of the required roles.')
-
+        return
     }
-}
 
-
-/**
- * Check if the requestor is authenticated (user exists in request context).
- * The _from_ argument can be a string or a function. If it's a string, the given attribute will be fetch
- * from the request or session contexts.
- * 
- * In case as function is provided, the function is provided the controller as _this_ object,
- * granting this way access to the controller or middleware class instance itself.
- * 
- * Additionally, the request and response objects will be provided to this function.
- *
- * @category web-security
- * @name @RequiresAuth
- * @function
- * @static
- * @param  {string|function} from where to fetch the user from
- * @see RequiresAuth
- * @example &lt;caption>Fetch from [request|session] _user_ attribute.&lt;/caption>
- * import { RequiresAuth } from 'primavera/web-security'
- * import { Controller, Route } from 'primavera/web'
- * \@Controller()
- * class MySecureController {
- * 
- *     \@RequiresAuth('user')
- *     \@Route.GET('me')
- *     async me() {
- *         // ...
- *     }
- * 
- * }
- * 
- * @example &lt;caption>Must be ALL OF the following&lt;/caption>
- * import { RequiresAuth } from 'primavera/web-security'
- * import { Controller, Route } from 'primavera/web'
- * \@Controller()
- * class MySecureController {
- * 
- *     \@RequiresAuth(myCustomAuthorizer)
- *     \@Route.GET('users/list')
- *     async listUsers() {
- *         // ...
- *     }
- * 
- * }
- * 
- * function myCustomAuthorizer(req, res) {
- *     return req.user || req.session.user
- * }
- * 
- */
-export function RequiresAuth(from = 'user') {
-    return function(target, name, descriptor) {
-        if (!descriptor) throw new Error('@RequiresAuth can only be used on method-level.')
-
-        const srcFn = descriptor.value
-        descriptor.value = function(...args) {
-            fetchUserFromContext.apply(this, [from])
-        }
+    const files = find.fileSync(patterns, __basedir)
+    for (let file of files) {
+        file = file.substring(0, file.lastIndexOf('.'))
+        if (!filterfn || filterfn(file)) //:
+            require.main.require(`${file}`)
     }
-}
-
-
-function fetchUserFromContext(from) {
-	let user
-
-    if (typeof from == 'function') {
-    	user = from.apply(this)//:
-    }
-    else {
-	    if (!this.$$context || !this.$$context.$request) //:
-	        throw new Error('Cannot access web-context from @RequiresAuth, are you using primavera/web?')
-
-	    const $request = this.$$context.$request
-	    user = $request[from || 'user'] || $request.session[from || 'user']
-	}
-
-	if (!user) {
-		debug('User is not authenticated ', from)
-		throw HttpError.unauthorized('User is not authenticated.')
-	}
-
-	return user
 }</code></pre>
         </article>
     </section>
