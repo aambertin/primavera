@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>validations.js - Documentation</title>
+    <title>web-security.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">validations.js</h1>
+    <h1 class="page-title">web-security.js</h1>
     
 
     
@@ -38,169 +38,161 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Decorators for general validations.
- * @module validations
- * @requires lodash
- * @requires jsonschema
+ * Decorators for API Endpoint and Middleware Auth functions
+ * @module web-security
+ * @requires primavera/web
  * @requires debug
+ * @requires lodash
+
  */
 
-const debug = require('debug')('primavera:validations')
-import jsonschema from 'jsonschema'
+const debug = require('debug')('primavera:web-security')
+
 import _ from 'lodash'
-
-class ValidationErrors extends Error {
-    constructor(errors) {
-        super()
-        this.errors = errors
-        this.status = 400
-    }
-}
-
-class ValidationError extends Error {
-    constructor(message, data) {
-        super()
-        _.merge(this, data)
-        this.status = 400 // bad format
-    }
-}
-
+import { HttpError } from './web'
 
 /**
- * Adds static and dynamic $validate methods to a given class/object.
- * The $validate methods will take care of validating the object against the provided JSON schema.
+ * Check if a given user possesses one of N authorized roles to execute this function.
+ * 
  *
- * @name @Schema
+ * @category web-security
+ * @name @RequiresRole
  * @function
  * @static
- * @param {object} jsonschema the json schema that should apply to instances of this object.
- */
-export function Schema(jsonSchema, dflt = {throwError: true}) {
-    return function(target, name, descriptor) {
-        if (!target || descriptor) throw new Error("@Schema decorator can only be used in a class.")
-
-        function validate(src, options) {
-            options = _.merge({},dflt,options)
-            debug(`Validating JSON Schema on ${target.name}: `,jsonSchema, src)
-
-            // TODO: Fix this validation mechanism, it's too expensive.
-            const obj = {}
-            for (let prop of Object.keys(src)) {//; 
-                debug(`Copying property ${prop} in ${target.name} to clear object`)
-                obj[prop] = src[prop]
-            }
-
-            const validation = jsonschema.validate(obj, jsonSchema)
-            if (validation.errors &amp;&amp; validation.errors.length > 0) {
-                debug(`Validation errors found in ${target.name}: `, validation.errors)
-                if (options.throwError) {
-                    const error = new ValidationError
-                    error.errors = validation.errors
-                    throw error
-                }
-                else {
-                    return validation.errors
-                }
-            }
-
-            return []
-        }
-        target.prototype.$validate = function(obj, options = dflt) {
-            return validate(obj || this, options)
-        }
-        target.$validate = validate
-
-
-        target.prototype.$validateAll = function(arr, options) {
-            if (!arr) return true
-            options = _.merge({},dflt,options)
-
-            let errors = []
-            for (let i=0; i &lt; arr.length; i++) {
-                const instanceErrors = target.$validate(arr[i], {throwError: false})
-                if (instanceErrors &amp;&amp; instanceErrors.length) {
-                    errors[i] = instanceErrors
-                }
-            }
-            if (errors.length > 1) {
-                if (options.throwError) {
-                    const error = new ValidationErrors
-                    error.errors = errors
-                    throw error
-                }
-                else {
-                    return errors
-                }
-            }
-
-            return []
-        }
-
-
-        return target
-    }
-}
-
-/**
- * Validate arguments of a method against json-schemas before allowing its execution.
- * @name @ValidateSchema
- * @function
- * @static
- * @example
- *
- * class MyClass {
- *
- *     // validate arguments with a json schema...
- *     \@ValidateSchema(SomeSchemaForArg1, SomeSchemaForArg2)
- *     async myMethod(arg1, arg2) {
+ * @param  {...string} roles list of authorized roles.
+ * @param {function} [roleFetcher] function used to fetch roles from the authentication context.
+ * @param {function} [userFetcher] function used to fetch a user from the authentication context.
+ * @see RequiresAuth
+ * @example &lt;caption>Must be ONE OF the following&lt;/caption>
+ * import { RequiresRole } from 'primavera/web-security'
+ * import { Controller, Route } from 'primavera/web'
+ * \@Controller()
+ * class MySecureController {
+ * 
+ *     \@RequiresRole('admin', 'manager')
+ *     \@Route.GET('users/list')
+ *     async listUsers() {
  *         // ...
  *     }
- *
- *     // or apply multiple schemas to one argument...
- *     \@ValidateSchema([Arg1Schema1, Arg1Schema2], SomeSchemaForArg2)
- *     async myOtherMethod(arg1, arg2) {
- *         // ...
- *     }
- *     
+ * 
  * }
+ * 
+ * @example &lt;caption>Must be ALL OF the following&lt;/caption>
+ * import { RequiresRole } from 'primavera/web-security'
+ * import { Controller, Route } from 'primavera/web'
+ * \@Controller()
+ * class MySecureController {
+ * 
+ *     \@RequiresRole('admin')
+ *     \@RequiesRole('manager')
+ *     \@Route.GET('users/list')
+ *     async listUsers() {
+ *         // ...
+ *     }
+ * 
+ * }
+ * 
  */
-export function ValidateSchema(...schemas) {
+export function RequiresRole(roles, roleFetcher, userFetcher) {
     return function(target, name, descriptor) {
-        if (!descriptor) return Schema(target, name, descriptor)
+        if (!descriptor) throw new Error('@RequiresAuth can only be used on method-level.')
+        roleFetcher = roleFetcher || 'roles'
+        userFetcher = userFetcher || 'user'
 
-        const fn = descriptor.value || descriptor.set
-        const attr = (descriptor.value) ? 'value' : 'set'
+        const user = fetchUserFromContext(userFetcher)
+        const userRoles = (typeof roleFetcher == 'function') ? roleFetcher.apply(this, [user]) : _.get(user, roleFetcher)
 
-        descriptor[attr] = function(...args) {
-            let errors = []
-            for (let i=0; i &lt; args.length; i++) {
-                const arg = args[i]
-                let schema = schemas[i]
+        for (let allowed of roles)
+            if (userRoles.find(allowed)) //:
+                return;
 
-                if (!schema) continue
+        throw HttpError.forbidden('Authenticated user does not have any of the required roles.')
 
-                // check if it's a dynamic schema resolver.
-                if (typeof schema == 'function') {
-                    schema = schema(arg, this)
-                }
-
-                debug('Validating with schema', arg, schema)
-                const validation = jsonschema.validate(arg, schema) 
-                if (validation.errors) errors = errors.concat(validation.errors)
-                
-            }
-
-            if (errors.length > 0) {
-                const error = new ValidationError
-                error.errors = errors
-                throw error
-            }
-
-            return fn.apply(this, args)
-        }
-
-        return descriptor
     }
+}
+
+
+/**
+ * Check if the requestor is authenticated (user exists in request context).
+ * The _from_ argument can be a string or a function. If it's a string, the given attribute will be fetch
+ * from the request or session contexts.
+ * 
+ * In case as function is provided, the function is provided the controller as _this_ object,
+ * granting this way access to the controller or middleware class instance itself.
+ * 
+ * Additionally, the request and response objects will be provided to this function.
+ *
+ * @category web-security
+ * @name @RequiresAuth
+ * @function
+ * @static
+ * @param  {string|function} from where to fetch the user from
+ * @see RequiresAuth
+ * @example &lt;caption>Fetch from [request|session] _user_ attribute.&lt;/caption>
+ * import { RequiresAuth } from 'primavera/web-security'
+ * import { Controller, Route } from 'primavera/web'
+ * \@Controller()
+ * class MySecureController {
+ * 
+ *     \@RequiresAuth('user')
+ *     \@Route.GET('me')
+ *     async me() {
+ *         // ...
+ *     }
+ * 
+ * }
+ * 
+ * @example &lt;caption>Must be ALL OF the following&lt;/caption>
+ * import { RequiresAuth } from 'primavera/web-security'
+ * import { Controller, Route } from 'primavera/web'
+ * \@Controller()
+ * class MySecureController {
+ * 
+ *     \@RequiresAuth(myCustomAuthorizer)
+ *     \@Route.GET('users/list')
+ *     async listUsers() {
+ *         // ...
+ *     }
+ * 
+ * }
+ * 
+ * function myCustomAuthorizer(req, res) {
+ *     return req.user || req.session.user
+ * }
+ * 
+ */
+export function RequiresAuth(from = 'user') {
+    return function(target, name, descriptor) {
+        if (!descriptor) throw new Error('@RequiresAuth can only be used on method-level.')
+
+        const srcFn = descriptor.value
+        descriptor.value = function(...args) {
+            fetchUserFromContext.apply(this, [from])
+        }
+    }
+}
+
+
+function fetchUserFromContext(from) {
+	let user
+
+    if (typeof from == 'function') {
+    	user = from.apply(this)//:
+    }
+    else {
+	    if (!this.$$context || !this.$$context.$request) //:
+	        throw new Error('Cannot access web-context from @RequiresAuth, are you using primavera/web?')
+
+	    const $request = this.$$context.$request
+	    user = $request[from || 'user'] || $request.session[from || 'user']
+	}
+
+	if (!user) {
+		debug('User is not authenticated ', from)
+		throw HttpError.unauthorized('User is not authenticated.')
+	}
+
+	return user
 }</code></pre>
         </article>
     </section>

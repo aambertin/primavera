@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>flow - Documentation</title>
+    <title>web-security - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">flow</h1>
+    <h1 class="page-title">web-security</h1>
     
 
     
@@ -49,7 +49,7 @@
     <div class="container-overview">
     
         
-            <div class="description"><p>Decorators for FLOW: pattern-matching service discovery.</p></div>
+            <div class="description"><p>Decorators for API Endpoint and Middleware Auth functions</p></div>
         
 
         
@@ -63,7 +63,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="flow.js.html">flow.js</a>, <a href="flow.js.html#line1">line 1</a>
+        <a href="web-security.js.html">web-security.js</a>, <a href="web-security.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -136,6 +136,10 @@
         <h3 class="subsection-title">Requires</h3>
 
         <ul>
+            <li>module:primavera/web</li>
+        
+            <li>module:debug</li>
+        
             <li>module:lodash</li>
         </ul>
     
@@ -156,7 +160,7 @@
 
     
 
-    <h4 class="name" id=".@Resolve"><span class="type-signature">(static) </span>@Resolve<span class="signature">(pattern)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".@RequiresAuth"><span class="type-signature">(static) </span>@RequiresAuth<span class="signature">(from)</span><span class="type-signature"></span></h4>
 
     
 
@@ -168,7 +172,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="flow.js.html">flow.js</a>, <a href="flow.js.html#line70">line 70</a>
+        <a href="web-security.js.html">web-security.js</a>, <a href="web-security.js.html#line76">line 76</a>
     </li></ul></dd>
     
 
@@ -199,147 +203,12 @@
     
 
     
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <p>@Resolve annotated methods act as part of the pattern-matching service resolution framework provided by Primavera.
-Requests to <em>resolve</em> a given pattern will be caught on a best-match basis, allowing you to specialize <em>resolvers</em> without
-going into an &quot;if this... if that&quot; code hell. Also, it's nice to just shout for stuff.</p>
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-    <pre class="prettyprint"><code>import { Resolve } from 'primavera/flow'
-class ServiceGroup {
-    </code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>pattern</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Pattern of the required resolution</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".@ResolveWith"><span class="type-signature">(static) </span>@ResolveWith<span class="signature">(pattern)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="flow.js.html">flow.js</a>, <a href="flow.js.html#line97">line 97</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>RequiresAuth</li>
+        </ul>
+    </dd>
     
 
     
@@ -350,7 +219,12 @@ class ServiceGroup {
 
 
 <div class="description">
-    <p>Des</p>
+    <p>Check if the requestor is authenticated (user exists in request context).
+The <em>from</em> argument can be a string or a function. If it's a string, the given attribute will be fetch
+from the request or session contexts.</p>
+<p>In case as function is provided, the function is provided the controller as <em>this</em> object,
+granting this way access to the controller or middleware class instance itself.</p>
+<p>Additionally, the request and response objects will be provided to this function.</p>
 </div>
 
 
@@ -361,24 +235,40 @@ class ServiceGroup {
 
 
 
-    <h5>Example</h5>
+    <h5>Examples</h5>
     
-    <pre class="prettyprint"><code>import { ResolveWith } from 'primavera/flow'
+        <p class="code-caption">Fetch from [request|session] _user_ attribute.</p>
+    
+    <pre class="prettyprint"><code>import { RequiresAuth } from 'primavera/web-security'
 import { Controller, Route } from 'primavera/web'
+@Controller()
+class MySecureController {
 
-@Controller({prefix: 'users'})
-class UsersController {
-
-    @Route.GET(':id')
-    async fetchUser(params) {
-        this.$doFetchUser(params.id)
+    @RequiresAuth('user')
+    @Route.GET('me')
+    async me() {
+        // ...
     }
 
-    @ResolveWith({domain: 'management/users', action: 'FetchUser'})
-    async $doFetchUser(_id) {
-         return { id: _id }
+}</code></pre>
+
+        <p class="code-caption">Must be ALL OF the following</p>
+    
+    <pre class="prettyprint"><code>import { RequiresAuth } from 'primavera/web-security'
+import { Controller, Route } from 'primavera/web'
+@Controller()
+class MySecureController {
+
+    @RequiresAuth(myCustomAuthorizer)
+    @Route.GET('users/list')
+    async listUsers() {
+        // ...
     }
- 
+
+}
+
+function myCustomAuthorizer(req, res) {
+    return req.user || req.session.user
 }</code></pre>
 
 
@@ -409,13 +299,16 @@ class UsersController {
 
         <tr>
             
-                <td class="name"><code>pattern</code></td>
+                <td class="name"><code>from</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">string</span>
+|
+
+<span class="param-type">function</span>
 
 
             
@@ -425,7 +318,259 @@ class UsersController {
 
             
 
-            <td class="description last"><p>the pattern to be used to discover the best possible <em>resolver</em>.</p></td>
+            <td class="description last"><p>where to fetch the user from</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".@RequiresRole"><span class="type-signature">(static) </span>@RequiresRole<span class="signature">(&hellip;roles, roleFetcher<span class="signature-attributes">opt</span>, userFetcher<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="web-security.js.html">web-security.js</a>, <a href="web-security.js.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>RequiresAuth</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    <p>Check if a given user possesses one of N authorized roles to execute this function.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Examples</h5>
+    
+        <p class="code-caption">Must be ONE OF the following</p>
+    
+    <pre class="prettyprint"><code>import { RequiresRole } from 'primavera/web-security'
+import { Controller, Route } from 'primavera/web'
+@Controller()
+class MySecureController {
+
+    @RequiresRole('admin', 'manager')
+    @Route.GET('users/list')
+    async listUsers() {
+        // ...
+    }
+
+}</code></pre>
+
+        <p class="code-caption">Must be ALL OF the following</p>
+    
+    <pre class="prettyprint"><code>import { RequiresRole } from 'primavera/web-security'
+import { Controller, Route } from 'primavera/web'
+@Controller()
+class MySecureController {
+
+    @RequiresRole('admin')
+    @RequiesRole('manager')
+    @Route.GET('users/list')
+    async listUsers() {
+        // ...
+    }
+
+}</code></pre>
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>roles</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>list of authorized roles.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>roleFetcher</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>function used to fetch roles from the authentication context.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>userFetcher</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>function used to fetch a user from the authentication context.</p></td>
         </tr>
 
     
