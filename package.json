@@ -15,7 +15,7 @@
   "author": "Anibal Ambertin <anibal@synergicsource.com> (http://www.synergicsource.com)",
   "license": "MIT",
   "repository": {
-    "url": "https://github.com/aambertin/primavera"
+    "url": "https://github.com/primaverajs/primavera"
   },
   "keywords": [
     "express",
